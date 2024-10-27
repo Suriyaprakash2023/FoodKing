@@ -23,7 +23,7 @@ const Footer = () => {
                         <div className="col-xl-3 col-sm-6 col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".2s">
                             <div className="single-footer-widget">
                                 <div className="widget-head">
-                                    <a href="index-2.html">
+                                    <a href="">
                                     <img src={logo} alt="logo-img"/>
                                     </a>
                                 </div>

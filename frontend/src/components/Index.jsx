@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Header from './Header'
 import Footer from './Footer'
 
@@ -11,7 +11,8 @@ import offerbg from '../assets/img/banner/offer-bg.png';
 import bg from '../assets/img/bg-image/bg.jpg';
 import comboobg from '../assets/img/banner/comboo-bg.jpg';
 import foodshape2 from '../assets/img/shape/food-shape-2.png';
-import foodshape from '../assets/img/shape/food-shape.png';
+import foodshape from '../assets/img/shape/food-shape.png';  
+import foodshapesvg from '../assets/img/shape/food-shape.svg';  
 import pepsibg from '../assets/img/banner/pepsi-bg.png';
 import kfc from '../assets/img/food/kfc.png';
 import burgerbg from '../assets/img/banner/burger-bg.png';
@@ -79,6 +80,9 @@ import iconpizza from "../assets/img/icon/pizza.png";
 import iconburger from "../assets/img/icon/burger.png";
 import kfcbg from "../assets/img/banner/kfc-bg.png";
 import aboutburger from "../assets/img/about/burger.png";
+import offerburger from "../assets/img/offer/burger.png";
+import offerpizza from "../assets/img/offer/pizza.png";
+
 const Index = () => {
   return (
     <>
@@ -117,7 +121,7 @@ const Index = () => {
                                                 chiken
                                             </h1>
                                             <div className="hero-button">
-                                                <a href="shop-single.html" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
+                                                <a href="" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
                                                 <span className="button-content-wrapper d-flex align-items-center">
                                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                                 <span className="button-text">order now</span>
@@ -165,7 +169,7 @@ const Index = () => {
                                                 chiken
                                             </h1>
                                             <div className="hero-button">
-                                                <a href="shop-single.html" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
+                                                <a href="" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
                                                 <span className="button-content-wrapper d-flex align-items-center">
                                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                                 <span className="button-text">order now</span>
@@ -215,7 +219,7 @@ const Index = () => {
                                                 chiken
                                             </h1>
                                             <div className="hero-button">
-                                                <a href="shop-single.html" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
+                                                <a href="" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
                                                 <span className="button-content-wrapper d-flex align-items-center">
                                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                                 <span className="button-text">order now</span>
@@ -264,7 +268,7 @@ const Index = () => {
                                                 chiken
                                             </h1>
                                             <div className="hero-button">
-                                                <a href="shop-single.html" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
+                                                <a href="" className="theme-btn" data-animation="fadeInUp" data-delay="0.9s">
                                                 <span className="button-content-wrapper d-flex align-items-center">
                                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                                 <span className="button-text">order now</span>
@@ -316,12 +320,10 @@ const Index = () => {
                     <div className="swiper-wrapper">
                         <div className="swiper-slide">
                             <div className="catagory-product-card bg-cover"
-                           style= {{ backgroundImage: `url(${herobg})` }}
-                            
-                        >
+                           style= {{ backgroundImage: `url(${catagorycardshape})`}} >
                                 <h5>5 products</h5>
                                 <div className="catagory-product-image text-center">
-                                    <a href="shop.html">
+                                    <a href="">
                                         <img src={pizza} alt="product-img"/>
                                         <div className="decor-leaf">
                                             <img src={decorleaf} alt="shape-img"/>
@@ -336,7 +338,7 @@ const Index = () => {
                                 </div>
                                 <div className="catagory-product-content text-center">
                                     <div className="catagory-product-icon">
-                                        <img src={foodshape} alt="shape-text"/>
+                                        <img src={foodshapesvg} alt="shape-text"/>
                                     </div>
                                     <h3>
                                         <a href="">
@@ -352,7 +354,7 @@ const Index = () => {
                           style=  {{ backgroundImage: `url(${catagorycardshape})` }}>
                                 <h5>5 products</h5>
                                 <div className="catagory-product-image text-center">
-                                    <a href="shop.html">
+                                    <a href="">
                                         <img src={pasta} alt="product-img"/>
                                         <div className="decor-leaf">
                                             <img src={decorleaf} alt="shape-img"/>
@@ -367,38 +369,7 @@ const Index = () => {
                                 </div>
                                 <div className="catagory-product-content text-center">
                                     <div className="catagory-product-icon">
-                                        <img src={foodshape} alt="shape-text"/>
-                                    </div>
-                                    <h3>
-                                        <a href="shop-single.html">
-                                        pro pizza
-                                        </a>
-                                    </h3>
-                                    <p>5 products</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="swiper-slide">
-                            <div className="catagory-product-card bg-cover"
-                            style=  {{ backgroundImage: `url(${catagorycardshape})` }}>
-                                <h5>5 products</h5>
-                                <div className="catagory-product-image text-center">
-                                    <a href="shop.html">
-                                        <img src={burger} alt="product-img"/>
-                                        <div className="decor-leaf">
-                                            <img src={decorleaf} alt="shape-img"/>
-                                        </div>
-                                        <div className="decor-leaf-2">
-                                            <img src={decorleaf2} alt="shape-img"/>
-                                        </div>
-                                        <div className="burger-shape">
-                                            <img src={burgershape} alt="shape-img"/>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div className="catagory-product-content text-center">
-                                    <div className="catagory-product-icon">
-                                        <img src={foodshape} alt="shape-text"/>
+                                        <img src={foodshapesvg} alt="shape-text"/>
                                     </div>
                                     <h3>
                                         <a href="">
@@ -414,7 +385,38 @@ const Index = () => {
                             style=  {{ backgroundImage: `url(${catagorycardshape})` }}>
                                 <h5>5 products</h5>
                                 <div className="catagory-product-image text-center">
-                                    <a href="shop.html">
+                                    <a href="">
+                                        <img src={burger} alt="product-img"/>
+                                        <div className="decor-leaf">
+                                            <img src={decorleaf} alt="shape-img"/>
+                                        </div>
+                                        <div className="decor-leaf-2">
+                                            <img src={decorleaf2} alt="shape-img"/>
+                                        </div>
+                                        <div className="burger-shape">
+                                            <img src={burgershape} alt="shape-img"/>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div className="catagory-product-content text-center">
+                                    <div className="catagory-product-icon">
+                                        <img src={foodshapesvg} alt="shape-text"/>
+                                    </div>
+                                    <h3>
+                                        <a href="">
+                                        pro pizza
+                                        </a>
+                                    </h3>
+                                    <p>5 products</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="swiper-slide">
+                            <div className="catagory-product-card bg-cover"
+                            style=  {{ backgroundImage: `url(${catagorycardshape})` }}>
+                                <h5>5 products</h5>
+                                <div className="catagory-product-image text-center">
+                                    <a href="">
                                         <img src={frenchfry} alt="product-img"/>
                                         <div className="decor-leaf">
                                             <img src={decorleaf} alt="shape-img"/>
@@ -429,7 +431,7 @@ const Index = () => {
                                 </div>
                                 <div className="catagory-product-content text-center">
                                     <div className="catagory-product-icon">
-                                        <img src={foodshape} alt="shape-text"/>
+                                        <img src={foodshapesvg} alt="shape-text"/>
                                     </div>
                                     <h3>
                                         <a href="">
@@ -575,13 +577,13 @@ const Index = () => {
                                     tODAY'S <span>ASTACKIN</span> DAY
                                 </h2>
                                 <h3 className="wow fadeInUp" data-wow-delay=".5s">
-                                    <a href="shop.html">
+                                    <a href="">
                                     grilled <span className="text-1">chiken</span>
                                     </a>
                                     <span className="text-2">$59,00</span>
                                 </h3>
                                 <div className="grilled-button wow fadeInUp" data-wow-delay=".7s">
-                                    <a href="shop-single.html" className="theme-btn">
+                                    <a href="" className="theme-btn">
                                     <span className="button-content-wrapper d-flex align-items-center">
                                     <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                     <span className="button-text">order now</span>
@@ -611,7 +613,7 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={beefruti} alt="product-img"/>
@@ -626,7 +628,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">ruti with beef slice</a>
+                                    <a href="">ruti with beef slice</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -641,14 +643,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".5s">
                         <div className="catagory-product-card-2 active text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={burger2} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -656,7 +658,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">Whopper Burger King</a>
+                                    <a href="">Whopper Burger King</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -671,14 +673,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".7s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={pasta2} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -686,7 +688,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">Chiness pasta</a>
+                                    <a href="">Chiness pasta</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -701,14 +703,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".8s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={pizza3} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -716,7 +718,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">delicious burger</a>
+                                    <a href="">delicious burger</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -731,14 +733,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={mainfood2} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -746,7 +748,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">fast food combo</a>
+                                    <a href="">fast food combo</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -761,14 +763,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".5s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={ruti} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -776,7 +778,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">ruti with chiken</a>
+                                    <a href="">ruti with chiken</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -791,14 +793,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".7s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={grilled2} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -806,7 +808,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">grilled chiken</a>
+                                    <a href="">grilled chiken</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -821,14 +823,14 @@ const Index = () => {
                     <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".8s">
                         <div className="catagory-product-card-2 text-center">
                             <div className="icon">
-                                <a href="shop-cart.html"><i className="far fa-heart"></i></a>
+                                <a href=""><i className="far fa-heart"></i></a>
                             </div>
                             <div className="catagory-product-image">
                                 <img src={deliciousburger} alt="product-img"/>
                             </div>
                             <div className="catagory-product-content">
                                 <div className="catagory-button">
-                                    <a href="shop-cart.html" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
@@ -836,7 +838,7 @@ const Index = () => {
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
-                                    <a href="shop-single.html">delicious burger</a>
+                                    <a href="">delicious burger</a>
                                 </h4>
                                 <div className="star">
                                     <span className="fas fa-star"></span>
@@ -850,7 +852,7 @@ const Index = () => {
                     </div>
                 </div>
                 <div className="catagory-button text-center pt-4 wow fadeInUp" data-wow-delay=".3s">
-                    <a href="shop.html" className="theme-btn">
+                    <a href="" className="theme-btn">
                     <span className="button-content-wrapper d-flex align-items-center">
                     <span className="button-icon"><i className="flaticon-delivery"></i></span>
                     <span className="button-text">view more</span>
@@ -896,7 +898,7 @@ const Index = () => {
                                     <button className="nav-link active wow fadeInUp" data-wow-delay=".5s" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
                                     <span className="food-comboo-list">
                                     <span className="offer-image">
-                                    <img src={pizza} alt="img"/>
+                                    <img src={offerpizza} alt="img"/>
                                     </span>
                                     <span className="comboo-title">
                                     20% off tasty pizza with drink
@@ -906,7 +908,7 @@ const Index = () => {
                                     <button className="nav-link wow fadeInUp" data-wow-delay=".7s" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
                                     <span className="food-comboo-list">
                                     <span className="offer-image">
-                                    <img src={burger} alt="img"/>
+                                    <img src={offerburger} alt="img"/>
                                     </span>
                                     <span className="comboo-title">
                                     2pcs humbergur with drinks & sauce
@@ -1159,7 +1161,7 @@ const Index = () => {
                                     </div>
                                 </div>
                                 <div className="info-area d-flex align-items-center">
-                                    <a href="about.html" className="theme-btn wow style-line-height fadeInUp" data-wow-delay=".3s">more about us</a>
+                                    <a href="" className="theme-btn wow style-line-height fadeInUp" data-wow-delay=".3s">more about us</a>
                                     <div className="info-content wow fadeInUp" data-wow-delay=".5s">
                                         <span>BRENDON GARREY</span>
                                         <h6>Customer’s experience is our highest priority.</h6>
@@ -1183,8 +1185,8 @@ const Index = () => {
                             <div className="burger-content text-center">
                                 <h3>today</h3>
                                 <h2>special</h2>
-                                <h4><a href="shop.html" className="text-white">beef <span>burger</span></a></h4>
-                                <a href="shop-single.html" className="theme-btn mt-4">
+                                <h4><a href="" className="text-white">beef <span>burger</span></a></h4>
+                                <a href="" className="theme-btn mt-4">
                                 <span className="button-content-wrapper d-flex align-items-center">
                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                 <span className="button-text">order now</span>
@@ -1216,7 +1218,7 @@ const Index = () => {
                                     The mouth-watering aroma of <br/>
                                     sizzling burgers
                                 </p>
-                                <a href="shop-single.html" className="theme-btn mt-4">
+                                <a href="" className="theme-btn mt-4">
                                 <span className="button-content-wrapper d-flex align-items-center">
                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                 <span className="button-text">order now</span>
@@ -1285,7 +1287,7 @@ const Index = () => {
                                         <p>Sec</p>
                                     </li>
                                 </ul>
-                                <a href="shop-single.html" className="theme-btn mt-5 wow fadeInUp" data-wow-delay=".8s">
+                                <a href="" className="theme-btn mt-5 wow fadeInUp" data-wow-delay=".8s">
                                 <span className="button-content-wrapper d-flex align-items-center">
                                 <span className="button-icon"><i className="flaticon-delivery"></i></span>
                                 <span className="button-text">order now</span>
@@ -1420,7 +1422,7 @@ const Index = () => {
                             <span className="theme-color-3">delivery</span> challage
                         </h2>
                     </div>
-                    <a href="shop-single.html" className="theme-btn bg-white mt-4 mt-md-0 wow fadeInUp" data-wow-delay=".5s">
+                    <a href="" className="theme-btn bg-white mt-4 mt-md-0 wow fadeInUp" data-wow-delay=".5s">
                     <span className="button-content-wrapper d-flex align-items-center">
                     <span className="button-icon"><i className="flaticon-delivery"></i></span>
                     <span className="button-text">order now</span>
@@ -1459,7 +1461,7 @@ const Index = () => {
                                     </div>
                                     <div className="content">
                                         <h5>24/7 Support center</h5>
-                                        <h3><a href="tel:+1718-904-4450">+1718-904-4450</a></h3>
+                                        <h3><a href="tel:+1718-904-4450">+91 9994383989</a></h3>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,13 @@
-import React from 'react'
+import {useState} from 'react'
 
 const MobileNav = () => {
+
+    const [isMobileNavOpen, setMobileNavOpen] = useState(false);
+
+    const closeMobileNav = () => {
+        setMobileNavOpen(false);
+      };
+
   return (
     <>
         <div className="fix-area">
@@ -13,7 +20,7 @@ const MobileNav = () => {
                                   <img src="/src/assets/img/logo/logo.svg" alt="logo-img"/>
                                   </a>
                               </div>
-                              <div className="offcanvas__close">
+                              <div className="offcanvas__close" onClick={closeMobileNav}>
                                   <button>
                                   <i className="fas fa-times"></i>
                                   </button>
@@ -105,8 +112,8 @@ const MobileNav = () => {
                       </div>
                   </div>
               </div>
-          </div>
-          <div className="offcanvas__overlay"></div>
+        </div>
+        <div className="offcanvas__overlay"></div>
     </>
   )
 }

@@ -154,7 +154,7 @@ const About = () => {
                   </div>
                   <div className="info-area d-flex align-items-center">
                     <a
-                      href="about.html"
+                      href=""
                       className="theme-btn style-line-height wow fadeInUp"
                       data-wow-delay=".3s"
                     >
@@ -202,7 +202,7 @@ const About = () => {
               </h2>
             </div>
             <a
-              href="shop-single.html"
+              href=""
               className="theme-btn bg-white wow fadeInUp"
               data-wow-delay=".5s"
             >
@@ -269,7 +269,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -288,7 +288,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -326,7 +326,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -348,7 +348,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -364,7 +364,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -418,7 +418,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -434,7 +434,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -450,7 +450,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -488,7 +488,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -504,7 +504,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -520,7 +520,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -536,7 +536,7 @@ const About = () => {
                         </div>
                         <div className="food-content">
                           <h3>
-                            <a href="shop-single.html">Chicago Deep Pizza.</a>
+                            <a href="">Chicago Deep Pizza.</a>
                           </h3>
                           <p>
                             It's the perfect dining experience where Experience
@@ -696,7 +696,7 @@ const About = () => {
                 </p>
                 <div className="button-area wow fadeInUp" data-wow-delay=".9s">
                   <a
-                    href="shop-single.html"
+                    href=""
                     className="theme-btn bg-transparent"
                   >
                     <span className="button-content-wrapper d-flex align-items-center">
@@ -747,7 +747,7 @@ const About = () => {
                 <div className="team-content">
                   <p>head chef</p>
                   <h3>
-                    <a href="team-details.html">Leslie Alexander</a>
+                    <a href="">Leslie Alexander</a>
                   </h3>
                 </div>
               </div>
