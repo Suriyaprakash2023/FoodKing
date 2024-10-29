@@ -64,7 +64,7 @@ const About = () => {
             <h1>About us</h1>
             <ul className="breadcrumb-items">
               <li>
-                <Link to="/">Home Page</Link>
+                <Link to="/">Home </Link>
               </li>
               <li>
                 <i className="far fa-chevron-right"></i>

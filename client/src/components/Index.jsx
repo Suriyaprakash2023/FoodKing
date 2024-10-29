@@ -580,7 +580,7 @@ const Index = () => {
                                     <a href="">
                                     grilled <span className="text-1">chiken</span>
                                     </a>
-                                    <span className="text-2">$59,00</span>
+                                    <span className="text-2">₹59,00</span>
                                 </h3>
                                 <div className="grilled-button wow fadeInUp" data-wow-delay=".7s">
                                     <a href="" className="theme-btn">
@@ -624,8 +624,8 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
+                                    <h6>₹30.52</h6>
+                                    <span>₹28.52</span>
                                 </div>
                                 <h4>
                                     <a href="">ruti with beef slice</a>
@@ -654,8 +654,8 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
+                                    <h6>₹30.52</h6>
+                                    <span>₹28.52</span>
                                 </div>
                                 <h4>
                                     <a href="">Whopper Burger King</a>
@@ -684,8 +684,8 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
+                                    <h6>₹30.52</h6>
+                                    <span>₹28.52</span>
                                 </div>
                                 <h4>
                                     <a href="">Chiness pasta</a>
@@ -714,8 +714,8 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
+                                    <h6>₹30.52</h6>
+                                    <span>₹28.52</span>
                                 </div>
                                 <h4>
                                     <a href="">delicious burger</a>
@@ -744,8 +744,8 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
+                                    <h6>₹30.52</h6>
+                                    <span>₹28.52</span>
                                 </div>
                                 <h4>
                                     <a href="">fast food combo</a>
@@ -774,7 +774,7 @@ const Index = () => {
                                 </div>
                                 <div className="info-price d-flex align-items-center justify-content-center">
                                     <p>-5%</p>
-                                    <h6>$30.52</h6>
+                                    <h6>₹30.52</h6>
                                     <span>$28.52</span>
                                 </div>
                                 <h4>
@@ -1109,7 +1109,7 @@ const Index = () => {
                                     <img src={burgertext} alt="shape-img"/>
                                 </div>
                                 <div className="price">
-                                    <h2>$<span className="count">4,99</span></h2>
+                                    <h2>₹<span className="count">4,99</span></h2>
                                 </div>
                                 <div className="since-text bg-cover" 
                                 
