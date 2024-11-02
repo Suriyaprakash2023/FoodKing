@@ -1,16 +1,50 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import {Link} from 'react-router-dom';
-import breadcrumb from '../assets/img/banner/breadcrumb.jpg';
-import mainctabg2 from '../assets/img/banner/main-cta-bg-2.jpg';
-import deliveryman2 from '../assets/img/delivery-man-2.png';
-import location from '../assets/img/icon/location.svg';
-import phone from "../assets/img/icon/phone.svg";
-import email from "../assets/img/icon/email.svg";
-import tomato from "../assets/img/tomato.png";
-import chilli from "../assets/img/chilli.png"
+import breadcrumb from '/src/assets/website/img/banner/breadcrumb.jpg';
+import mainctabg2 from '/src/assets/website/img/banner/main-cta-bg-2.jpg';
+import deliveryman2 from '/src/assets/website/img/delivery-man-2.png';
+import location from '/src/assets/website/img/icon/location.svg';
+import phone from "/src/assets/website/img/icon/phone.svg";
+import email from "/src/assets/website/img/icon/email.svg";
+import tomato from "/src/assets/website/img/tomato.png";
+import chilli from "/src/assets/website/img/chilli.png"
 const Contact = () => {
+    // useEffect(() => {
+    //     // Load main site CSS
+    //     import('/src/assets/website/img/logo/favicon.svg');
+    //     import('/src/assets/website/css/bootstrap.min.css');
+    //     import('/src/assets/website/css/font-awesome.css');
+    //     import('/src/assets/website/css/animate.css');
+    //     import('/src/assets/website/css/magnific-popup.css');
+    //     import('/src/assets/website/css/swiper-bundle.min.css');
+    //     import('/src/assets/website/css/nice-select.css');
+    //     import('/src/assets/website/css/main.css');
+    //     import('/src/assets/website/css/meanmenu.css');
+        
+        
+    //     // Load main site JS
+    //     import('/src/assets/website/js/animation.js');
+    //     import('/src/assets/website/js/bootstrap.bundle.min.js');
+    //     import('/src/assets/website/js/countdowncustom.js');
+    //     import('/src/assets/website/js/jquery-3.7.1.min.js');
+    //     import('/src/assets/website/js/jquery.counterup.min.js');
+    //     import('/src/assets/website/js/jquery.magnific-popup.min.js');
+    //     import('/src/assets/website/js/jquery.meanmenu.min.js');
+    //     import('/src/assets/website/js/jquery.nice-select.min.js');
+    //     import('/src/assets/website/js/jquery.waypoints.js');
+    //     import('/src/assets/website/js/main.js');
+    //     import('/src/assets/website/js/swiper-bundle.min.js');
+    //     import('/src/assets/website/js/viewport.jquery.js');
+    //     import('/src/assets/website/js/wow.min.js');
+
+
+
+        
+    //   }, []);
+    
+
   return (
     <>
         <Header/>
@@ -25,7 +59,7 @@ const Contact = () => {
                     <ul className="breadcrumb-items">
                         <li>
                             <Link to='/'>
-                            Home Page
+                            Home 
                             </Link>
                         </li>
                         <li>

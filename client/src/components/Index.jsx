@@ -1,89 +1,93 @@
-
+import { useEffect } from 'react';
 import Header from './Header'
 import Footer from './Footer'
 
-import bookingshape from '../assets/img/shape/booking-shape.png';
-import mainbg from '../assets/img/banner/main-bg.jpg';
-import mainctabg from '../assets/img/banner/main-cta-bg.jpg';
-import herobg from '../assets/img/hero/hero-bg.jpg';
-import catagorycardshape from '../assets/img/shape/catagory-card-shape.jpg';
-import offerbg from '../assets/img/banner/offer-bg.png';
-import bg from '../assets/img/bg-image/bg.jpg';
-import comboobg from '../assets/img/banner/comboo-bg.jpg';
-import foodshape2 from '../assets/img/shape/food-shape-2.png';
-import foodshape from '../assets/img/shape/food-shape.png';  
-import foodshapesvg from '../assets/img/shape/food-shape.svg';  
-import pepsibg from '../assets/img/banner/pepsi-bg.png';
-import kfc from '../assets/img/food/kfc.png';
-import burgerbg from '../assets/img/banner/burger-bg.png';
-import client1 from '../assets/img/client/01.jpg';
-import client2 from '../assets/img/client/02.jpg';
-import client3 from '../assets/img/client/03.jpg';
-import chillishape from "../assets/img/hero/chilli-shape.png";
-import fireshape from "../assets/img/hero/fire-shape.png";
-import chillishape2 from "../assets/img/hero/chilli-shape-2.png";
-import chillishape3 from "../assets/img/hero/chilli-shape-3.png";
-import offershape from "../assets/img/hero/offer-shape.png";
-import chiken from "../assets/img/hero/chiken.png";
-import tomatoshape from "../assets/img/shape/tomato-shape.png";
-import burgershape2 from "../assets/img/shape/burger-shape-2.png";
-import pizza from "../assets/img/food/pizza.png";
-import decorleaf from "../assets/img/shape/decor-leaf.svg";
-import decorleaf2 from "../assets/img/shape/decor-leaf-2.svg";
-import burgershape from "../assets/img/shape/burger-shape.png";
-import burgershape3  from "../assets/img/shape/burger-shape-3.png";
-import burger from "../assets/img/food/burger.png";
-import chilishape from "../assets/img/shape/chili-shape.png";
-import fryshape from "../assets/img/shape/fry-shape.png";
-import fryshape2 from "../assets/img/shape/fry-shape-2.png";
-import percentoff from "../assets/img/offer/50percent-off.png" ;
-import  percentoff2 from "../assets/img/offer/50percent-off-2.png";
-import burgertext from "../assets/img/shape/burger-text.png";
+import bookingshape from '/src/assets/website/img/shape/booking-shape.png';
+import mainbg from '/src/assets/website/img/banner/main-bg.jpg';
+import mainctabg from '/src/assets/website/img/banner/main-cta-bg.jpg';
+import herobg from '/src/assets/website/img/hero/hero-bg.jpg';
+import catagorycardshape from '/src/assets/website/img/shape/catagory-card-shape.jpg';
+import offerbg from '/src/assets/website/img/banner/offer-bg.png';
+import bg from '/src/assets/website/img/bg-image/bg.jpg';
+import comboobg from '/src/assets/website/img/banner/comboo-bg.jpg';
+import foodshape2 from '/src/assets/website/img/shape/food-shape-2.png';
+import foodshape from '/src/assets/website/img/shape/food-shape.png';  
+import foodshapesvg from '/src/assets/website/img/shape/food-shape.svg';  
+import pepsibg from '/src/assets/website/img/banner/pepsi-bg.png';
+import kfc from '/src/assets/website/img/food/kfc.png';
+import burgerbg from '/src/assets/website/img/banner/burger-bg.png';
+import client1 from '/src/assets/website/img/client/01.jpg';
+import client2 from '/src/assets/website/img/client/02.jpg';
+import client3 from '/src/assets/website/img/client/03.jpg';
+import chillishape from "/src/assets/website/img/hero/chilli-shape.png";
+import fireshape from "/src/assets/website/img/hero/fire-shape.png";
+import chillishape2 from "/src/assets/website/img/hero/chilli-shape-2.png";
+import chillishape3 from "/src/assets/website/img/hero/chilli-shape-3.png";
+import offershape from "/src/assets/website/img/hero/offer-shape.png";
+import chiken from "/src/assets/website/img/hero/chiken.png";
+import tomatoshape from "/src/assets/website/img/shape/tomato-shape.png";
+import burgershape2 from "/src/assets/website/img/shape/burger-shape-2.png";
+import pizza from "/src/assets/website/img/food/pizza.png";
+import decorleaf from "/src/assets/website/img/shape/decor-leaf.svg";
+import decorleaf2 from "/src/assets/website/img/shape/decor-leaf-2.svg";
+import burgershape from "/src/assets/website/img/shape/burger-shape.png";
+import burgershape3  from "/src/assets/website/img/shape/burger-shape-3.png";
+import burger from "/src/assets/website/img/food/burger.png";
+import chilishape from "/src/assets/website/img/shape/chili-shape.png";
+import fryshape from "/src/assets/website/img/shape/fry-shape.png";
+import fryshape2 from "/src/assets/website/img/shape/fry-shape-2.png";
+import percentoff from "/src/assets/website/img/offer/50percent-off.png" ;
+import  percentoff2 from "/src/assets/website/img/offer/50percent-off-2.png";
+import burgertext from "/src/assets/website/img/shape/burger-text.png";
 
-import mainfood from "../assets/img/food/main-food.png"
-import pizzatext from "../assets/img/shape/pizza-text.png"
-import pizzashape  from "../assets/img/shape/pizzashape.png"
-import pizza2 from "../assets/img/food/pizza-2.png"
-import brand01 from "../assets/img/brand/01.svg"
-import brand02 from "../assets/img/brand/02.svg"
-import brand03 from "../assets/img/brand/03.svg"
-import brand04 from "../assets/img/brand/04.svg"
-import brand05 from "../assets/img/brand/05.svg"
-import brand06 from "../assets/img/brand/06.svg"
-import patatoshape from "../assets/img/shape/patato-shape.png"
-import spicy from"../assets/img/shape/spicy.png"
-import tomatoshape2 from "../assets/img/shape/tomato-shape-2.png"
-import grilled from "../assets/img/food/grilled.png"
-import beefruti from "../assets/img/food/beef-ruti.png"
-import burger2 from "../assets/img/food/burger-2.png"
-import pasta2 from "../assets/img/food/pasta-2.png"
-import pizza3 from "../assets/img/food/pizza-3.png"
-import mainfood2 from "../assets/img/food/main-food-2.png"
-import ruti from "../assets/img/food/ruti.png"
-import grilled2 from "../assets/img/food/grilled-2.png"
-import deliciousburger from "../assets/img/food/delicious-burger.png"
-import arrowshape from "../assets/img/shape/arrow-shape.png"
-import deliveryman from "../assets/img/delivery-man.png"
-import frame from "../assets/img/shape/frame.png";
-import pasta from "../assets/img/food/pasta.png";
-import frenchfry from "../assets/img/food/french-fry.png";
-import pizzatext2 from "../assets/img/shape/pizza-text-2.png" 
-import bigpizza from "../assets/img/food/big-pizza.png"
-import vegetable from "../assets/img/shape/vegetable.png"
-import combopizzatext from "../assets/img/shape/combo-pizza-text.png"
-import bigburger from "../assets/img/food/big-burger.png"
-import percentoff3 from "../assets/img/offer/50percent-off-3.png"
-import rollerbox from "../assets/img/food/roller-box.png"
-import chicken from "../assets/img/offer/chicken.png"
-import drinks from "../assets/img/shape/drinks.png"
-import iconpizza from "../assets/img/icon/pizza.png";
-import iconburger from "../assets/img/icon/burger.png";
-import kfcbg from "../assets/img/banner/kfc-bg.png";
-import aboutburger from "../assets/img/about/burger.png";
-import offerburger from "../assets/img/offer/burger.png";
-import offerpizza from "../assets/img/offer/pizza.png";
+import mainfood from "/src/assets/website/img/food/main-food.png"
+import pizzatext from "/src/assets/website/img/shape/pizza-text.png"
+import pizzashape  from "/src/assets/website/img/shape/pizzashape.png"
+import pizza2 from "/src/assets/website/img/food/pizza-2.png"
+import brand01 from "/src/assets/website/img/brand/01.svg"
+import brand02 from "/src/assets/website/img/brand/02.svg"
+import brand03 from "/src/assets/website/img/brand/03.svg"
+import brand04 from "/src/assets/website/img/brand/04.svg"
+import brand05 from "/src/assets/website/img/brand/05.svg"
+import brand06 from "/src/assets/website/img/brand/06.svg"
+import patatoshape from "/src/assets/website/img/shape/patato-shape.png"
+import spicy from"/src/assets/website/img/shape/spicy.png"
+import tomatoshape2 from "/src/assets/website/img/shape/tomato-shape-2.png"
+import grilled from "/src/assets/website/img/food/grilled.png"
+import beefruti from "/src/assets/website/img/food/beef-ruti.png"
+import burger2 from "/src/assets/website/img/food/burger-2.png"
+import pasta2 from "/src/assets/website/img/food/pasta-2.png"
+import pizza3 from "/src/assets/website/img/food/pizza-3.png"
+import mainfood2 from "/src/assets/website/img/food/main-food-2.png"
+import ruti from "/src/assets/website/img/food/ruti.png"
+import grilled2 from "/src/assets/website/img/food/grilled-2.png"
+import deliciousburger from "/src/assets/website/img/food/delicious-burger.png"
+import arrowshape from "/src/assets/website/img/shape/arrow-shape.png"
+import deliveryman from "/src/assets/website/img/delivery-man.png"
+import frame from "/src/assets/website/img/shape/frame.png";
+import pasta from "/src/assets/website/img/food/pasta.png";
+import frenchfry from "/src/assets/website/img/food/french-fry.png";
+import pizzatext2 from "/src/assets/website/img/shape/pizza-text-2.png" 
+import bigpizza from "/src/assets/website/img/food/big-pizza.png"
+import vegetable from "/src/assets/website/img/shape/vegetable.png"
+import combopizzatext from "/src/assets/website/img/shape/combo-pizza-text.png"
+import bigburger from "/src/assets/website/img/food/big-burger.png"
+import percentoff3 from "/src/assets/website/img/offer/50percent-off-3.png"
+import rollerbox from "/src/assets/website/img/food/roller-box.png"
+import chicken from "/src/assets/website/img/offer/chicken.png"
+import drinks from "/src/assets/website/img/shape/drinks.png"
+import iconpizza from "/src/assets/website/img/icon/pizza.png";
+import iconburger from "/src/assets/website/img/icon/burger.png";
+import kfcbg from "/src/assets/website/img/banner/kfc-bg.png";
+import aboutburger from "/src/assets/website/img/about/burger.png";
+import offerburger from "/src/assets/website/img/offer/burger.png";
+import offerpizza from "/src/assets/website/img/offer/pizza.png";
 
 const Index = () => {
+    
+    
+
+
   return (
     <>
       <Header/>

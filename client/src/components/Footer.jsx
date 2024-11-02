@@ -1,11 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import burgershape3 from '../assets/img/shape/burger-shape-3.png';
-import card from '../assets/img/card.png';
-import googleplay from '../assets/img/google-play.png';
-import fryshape2 from '../assets/img/shape/fry-shape-2.png';
-import logo  from '../assets/img/logo/logo.svg'
-import appstore from '../assets/img/app-store.png'
+import burgershape3 from '/src/assets/website/img/shape/burger-shape-3.png';
+import card from '/src/assets/website/img/card.png';
+import googleplay from '/src/assets/website/img/google-play.png';
+import fryshape2 from '/src/assets/website/img/shape/fry-shape-2.png';
+import logo  from '/src/assets/website/img/logo/logo.svg'
+import appstore from '/src/assets/website/img/app-store.png'
 
 const Footer = () => {
   return (

@@ -1,53 +1,86 @@
-import React from "react";
+import React,{useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
-import burger from "../assets/img/about/burger.png";
-import burgertext from "../assets/img/about/burger-text.png";
-import tomato from "../assets/img/tomato.png";
-import chilli from "../assets/img/chilli.png";
-import deliveryman2 from "../assets/img/delivery-man-2.png";
-import breadcrumb from "../assets/img/banner/breadcrumb.jpg";
+import burger from "/src/assets/website/img/about/burger.png";
+import burgertext from "/src/assets/website/img/about/burger-text.png";
+import tomato from "/src/assets/website/img/tomato.png";
+import chilli from "/src/assets/website/img/chilli.png";
+import deliveryman2 from "/src/assets/website/img/delivery-man-2.png";
+import breadcrumb from "/src/assets/website/img/banner/breadcrumb.jpg";
 
-import pizza from "../assets/img/about-food/pizza.png";
-import potato from "../assets/img/about-food/potato.png";
-import chicken from "../assets/img/about-food/chicken.png";
-import cheeseburger from "../assets/img/about-food/cheeseburger.png";
-import bigburger from "../assets/img/food/big-burger.png";
-import pizzatext2 from "../assets/img/shape/pizza-text-2.png";
-import percent from "../assets/img/offer/50percent-off-3.png";
-import rollerbox from "../assets/img/food/roller-box.png";
-import fryshape4 from "../assets/img/shape/fry-shape-4.png";
-import burgershape4 from "../assets/img/shape/burger-shape-4.png";
-import burgershape3 from "../assets/img/shape/burger-shape-3.png";
-import team01 from "../assets/img/team/01.jpg";
-import team02 from "../assets/img/team/02.jpg";
-import team03 from "../assets/img/team/03.jpg";
+import pizza from "/src/assets/website/img/about-food/pizza.png";
+import potato from "/src/assets/website/img/about-food/potato.png";
+import chicken from "/src/assets/website/img/about-food/chicken.png";
+import cheeseburger from "/src/assets/website/img/about-food/cheeseburger.png";
+import bigburger from "/src/assets/website/img/food/big-burger.png";
+import pizzatext2 from "/src/assets/website/img/shape/pizza-text-2.png";
+import percent from "/src/assets/website/img/offer/50percent-off-3.png";
+import rollerbox from "/src/assets/website/img/food/roller-box.png";
+import fryshape4 from "/src/assets/website/img/shape/fry-shape-4.png";
+import burgershape4 from "/src/assets/website/img/shape/burger-shape-4.png";
+import burgershape3 from "/src/assets/website/img/shape/burger-shape-3.png";
+import team01 from "/src/assets/website/img/team/01.jpg";
+import team02 from "/src/assets/website/img/team/02.jpg";
+import team03 from "/src/assets/website/img/team/03.jpg";
 
-import choose01 from "../assets/img/choose/01.png";
-import choose02 from "../assets/img/choose/02.png";
-import choose03 from "../assets/img/choose/03.png";
-import pizzashape from "../assets/img/shape/pizzashape.png";
-import instagrambanner from "../assets/img/instagram-banner/01.jpg";
-import fryshape2 from "../assets/img/shape/fry-shape-2.png";
-import instagrambanner2 from "../assets/img/instagram-banner/02.jpg";
-import instagrambanner3 from "../assets/img/instagram-banner/03.jpg";
-import instagrambanner4 from "../assets/img/instagram-banner/04.jpg";
-import instagrambanner5 from "../assets/img/instagram-banner/05.jpg";
-import foodshape from "../assets/img/shape/food-shape.png";
-import burgerbg from "../assets/img/banner/burger-bg.png";
-// import burger from "../assets/img/icon/burger.png"
-import pepsibg from "../assets/img/banner/pepsi-bg.png";
-import bestsale4 from "../assets/img/banner/best-sale-4.jpg";
-import shape from "../assets/img/shape.png";
-import aboutfoodbg from "../assets/img/shape/about-food-bg.png";
-import client01 from "../assets/img/client/01.jpg";
-import client02 from "../assets/img/client/02.jpg";
-import client03 from "../assets/img/client/03.jpg";
-import mainbg from "../assets/img/banner/main-bg.jpg";
-import mainctabg2 from "../assets/img/banner/main-cta-bg-2.jpg";
-import bookingshape from '../assets/img/shape/booking-shape.png';
+import choose01 from "/src/assets/website/img/choose/01.png";
+import choose02 from "/src/assets/website/img/choose/02.png";
+import choose03 from "/src/assets/website/img/choose/03.png";
+import pizzashape from "/src/assets/website/img/shape/pizzashape.png";
+import instagrambanner from "/src/assets/website/img/instagram-banner/01.jpg";
+import fryshape2 from "/src/assets/website/img/shape/fry-shape-2.png";
+import instagrambanner2 from "/src/assets/website/img/instagram-banner/02.jpg";
+import instagrambanner3 from "/src/assets/website/img/instagram-banner/03.jpg";
+import instagrambanner4 from "/src/assets/website/img/instagram-banner/04.jpg";
+import instagrambanner5 from "/src/assets/website/img/instagram-banner/05.jpg";
+import foodshape from "/src/assets/website/img/shape/food-shape.png";
+import burgerbg from "/src/assets/website/img/banner/burger-bg.png";
+// import burger from "/src/assets/website/img/icon/burger.png"
+import pepsibg from "/src/assets/website/img/banner/pepsi-bg.png";
+import bestsale4 from "/src/assets/website/img/banner/best-sale-4.jpg";
+import shape from "/src/assets/website/img/shape.png";
+import aboutfoodbg from "/src/assets/website/img/shape/about-food-bg.png";
+import client01 from "/src/assets/website/img/client/01.jpg";
+import client02 from "/src/assets/website/img/client/02.jpg";
+import client03 from "/src/assets/website/img/client/03.jpg";
+import mainbg from "/src/assets/website/img/banner/main-bg.jpg";
+import mainctabg2 from "/src/assets/website/img/banner/main-cta-bg-2.jpg";
+import bookingshape from '/src/assets/website/img/shape/booking-shape.png';
 const About = () => {
+  // useEffect(() => {
+  //   // Load main site CSS
+  //   import('/src/assets/website/img/logo/favicon.svg');
+  //   import('/src/assets/website/css/bootstrap.min.css');
+  //   import('/src/assets/website/css/font-awesome.css');
+  //   import('/src/assets/website/css/animate.css');
+  //   import('/src/assets/website/css/magnific-popup.css');
+  //   import('/src/assets/website/css/swiper-bundle.min.css');
+  //   import('/src/assets/website/css/nice-select.css');
+  //   import('/src/assets/website/css/main.css');
+  //   import('/src/assets/website/css/meanmenu.css');
+    
+    
+  //   // Load main site JS
+  //   import('/src/assets/website/js/animation.js');
+  //   import('/src/assets/website/js/bootstrap.bundle.min.js');
+  //   import('/src/assets/website/js/countdowncustom.js');
+  //   import('/src/assets/website/js/jquery-3.7.1.min.js');
+  //   import('/src/assets/website/js/jquery.counterup.min.js');
+  //   import('/src/assets/website/js/jquery.magnific-popup.min.js');
+  //   import('/src/assets/website/js/jquery.meanmenu.min.js');
+  //   import('/src/assets/website/js/jquery.nice-select.min.js');
+  //   import('/src/assets/website/js/jquery.waypoints.js');
+  //   import('/src/assets/website/js/main.js');
+  //   import('/src/assets/website/js/swiper-bundle.min.js');
+  //   import('/src/assets/website/js/viewport.jquery.js');
+  //   import('/src/assets/website/js/wow.min.js');
+
+
+
+    
+  // }, []);
+
   return (
     <>
       <Header />

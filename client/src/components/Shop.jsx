@@ -1,14 +1,49 @@
+import {useEffect} from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import breadcrumb from '../assets/img/banner/breadcrumb.jpg';
-import mainctabg2 from '../assets/img/banner/main-cta-bg-2.jpg';
-import food1 from '../assets/img/shop-food/food-1.png';
-import food2 from '../assets/img/shop-food/food-2.png';
-import food3 from '../assets/img/shop-food/food-3.png';
-import food4 from '../assets/img/shop-food/food-4.png';
+import breadcrumb from '/src/assets/website/img/banner/breadcrumb.jpg';
+import mainctabg2 from '/src/assets/website/img/banner/main-cta-bg-2.jpg';
+import food1 from '/src/assets/website/img/shop-food/food-1.png';
+import food2 from '/src/assets/website/img/shop-food/food-2.png';
+import food3 from '/src/assets/website/img/shop-food/food-3.png';
+import food4 from '/src/assets/website/img/shop-food/food-4.png';
 import {Link} from 'react-router-dom';
 
 const Shop = () => {
+
+    // useEffect(() => {
+    //     // Load main site CSS
+    //     import('/src/assets/website/img/logo/favicon.svg');
+    //     import('/src/assets/website/css/bootstrap.min.css');
+    //     import('/src/assets/website/css/font-awesome.css');
+    //     import('/src/assets/website/css/animate.css');
+    //     import('/src/assets/website/css/magnific-popup.css');
+    //     import('/src/assets/website/css/swiper-bundle.min.css');
+    //     import('/src/assets/website/css/nice-select.css');
+    //     import('/src/assets/website/css/main.css');
+    //     import('/src/assets/website/css/meanmenu.css');
+        
+        
+    //     // Load main site JS
+    //     import('/src/assets/website/js/animation.js');
+    //     import('/src/assets/website/js/bootstrap.bundle.min.js');
+    //     import('/src/assets/website/js/countdowncustom.js');
+    //     import('/src/assets/website/js/jquery-3.7.1.min.js');
+    //     import('/src/assets/website/js/jquery.counterup.min.js');
+    //     import('/src/assets/website/js/jquery.magnific-popup.min.js');
+    //     import('/src/assets/website/js/jquery.meanmenu.min.js');
+    //     import('/src/assets/website/js/jquery.nice-select.min.js');
+    //     import('/src/assets/website/js/jquery.waypoints.js');
+    //     import('/src/assets/website/js/main.js');
+    //     import('/src/assets/website/js/swiper-bundle.min.js');
+    //     import('/src/assets/website/js/viewport.jquery.js');
+    //     import('/src/assets/website/js/wow.min.js');
+
+
+
+        
+    //   }, []);
+    
   return (
     <>
      <Header/>
@@ -151,7 +186,7 @@ const Shop = () => {
                     <div className="col-xl-9 col-lg-8 order-1 order-md-2">
                         <div className="woocommerce-notices-wrapper">
                             <div className="product-showing">
-                                <h5><a href=""><span><img src="/src/assets/img/filter.png" alt="img"/></span> Filtering</a></h5>
+                                <h5><a href=""><span><img src="/src/assets/website//img/filter.png" alt="img"/></span> Filtering</a></h5>
                                 <h5>Showing <span>1–12</span> of 27 results</h5>
                             </div>
                             <div className="form-clt">
@@ -190,7 +225,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/pasta-2.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/pasta-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -216,11 +251,9 @@ const Shop = () => {
                             </div>
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style active text-center">
-                                    <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
-                                    </div>
+                                    
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/burger-2.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/burger-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -250,7 +283,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/pizza-3.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/pizza-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -280,7 +313,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/ruti.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/ruti.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -310,7 +343,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/grilled-2.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/grilled-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -340,7 +373,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/main-food-3.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/main-food-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -370,7 +403,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/french-fry-3.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/french-fry-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -400,7 +433,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/fried-chicken-2.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/fried-chicken-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -430,7 +463,7 @@ const Shop = () => {
                                         <a href=""><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
-                                        <img src="/src/assets/img/food/french-fry-4.png" alt="product-img"/>
+                                        <img src="/src/assets/website//img/food/french-fry-4.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
@@ -476,10 +509,10 @@ const Shop = () => {
         style={{ backgroundImage: `url(${mainctabg2})` }}
         >
             <div className="tomato-shape-left float-bob-y">
-                <img src="/src/assets/img/tomato.png" alt="shape-img"/>
+                <img src="/src/assets/website//img/tomato.png" alt="shape-img"/>
             </div>
             <div className="chili-shape-right float-bob-y">
-                <img src="/src/assets/img/chilli.png" alt="shape-img"/>
+                <img src="/src/assets/website//img/chilli.png" alt="shape-img"/>
             </div>
             <div className="container">
                 <div className="main-cta-banner-wrapper-2 d-flex align-items-center justify-content-between">
@@ -497,7 +530,7 @@ const Shop = () => {
                     </span>
                     </a>
                     <div className="delivery-man">
-                        <img src="/src/assets/img/delivery-man-2.png" alt="img"/>
+                        <img src="/src/assets/website//img/delivery-man-2.png" alt="img"/>
                     </div>
                 </div>
             </div>

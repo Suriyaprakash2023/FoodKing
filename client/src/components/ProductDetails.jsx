@@ -1,36 +1,42 @@
-import React from 'react';
-import breadcrumb from '../assets/img/banner/main-cta-bg-2.jpg';
-import mainctabg2 from '../assets/img/banner/breadcrumb.jpg';
-import details1 from "../assets/img/shop-food/details-1.png";
-import review01 from"../assets/img/shop-food/review/01.jpg";
-import review02 from"../assets/img/shop-food/review/02.jpg";
-import beefruti from "../assets/img/food/beef-ruti.png";
-import burger2 from "../assets/img/food/burger-2.png";
-import pasta2 from "../assets/img/food/pasta-2.png";
-import pizza3 from "../assets/img/food/pizza-3.png";
-import tomato from "../assets/img/tomato.png";
-import chilli from "../assets/img/chilli.png";
-import deliveryman2 from "../assets/img/delivery-man-2.png";
+
+import breadcrumb from '/src/assets/website/img/banner/main-cta-bg-2.jpg';
+import mainctabg2 from '/src/assets/website/img/banner/breadcrumb.jpg';
+import details1 from "/src/assets/website/img/shop-food/details-1.png";
+import review01 from"/src/assets/website/img/shop-food/review/01.jpg";
+import review02 from"/src/assets/website/img/shop-food/review/02.jpg";
+import beefruti from "/src/assets/website/img/food/beef-ruti.png";
+import burger2 from "/src/assets/website/img/food/burger-2.png";
+import pasta2 from "/src/assets/website/img/food/pasta-2.png";
+import pizza3 from "/src/assets/website/img/food/pizza-3.png";
+import tomato from "/src/assets/website/img/tomato.png";
+import chilli from "/src/assets/website/img/chilli.png";
+import deliveryman2 from "/src/assets/website/img/delivery-man-2.png";
+
+import {Link} from 'react-router-dom';
+import Header from './Header';
+import Footer from './Footer';
 
 const ProductDetails = () => {
   return (
     <>
+        <Header/>
+
        {/*  Breadcrumb Section Start  */}
         <div className="breadcrumb-wrapper bg-cover" style={{ backgroundImage: `url(${breadcrumb})` }}>
             <div className="container">
                 <div className="page-heading center">
-                    <h1>product single 2</h1>
+                    <h1>product </h1>
                     <ul className="breadcrumb-items">
                         <li>
-                            <a href="">
-                            Home Page
-                            </a>
+                            <Link to="/">
+                            Home 
+                            </Link>
                         </li>
                         <li>
                             <i className="far fa-chevron-right"></i>
                         </li>
                         <li>
-                            product single 2
+                            product 
                         </li>
                     </ul>
                 </div>
@@ -62,8 +68,8 @@ const ProductDetails = () => {
                                 </div>
                                 <h3 className="pb-3">Whopper Burger King</h3>
                                 <div className="price-list d-flex align-items-center mb-4">
-                                    <span>$4,600.00</span>
-                                    <del>$4,600.00</del>
+                                    <span>₹ 4,600.00</span>
+                                    <del>₹ 4,600.00</del>
                                 </div>
                                 <p className="mb-4">
                                     There are many variations of passages of Lorem Ipsum available, but majority
@@ -84,7 +90,7 @@ const ProductDetails = () => {
                         <div className="col-xl-3 col-lg-4">
                             <div className="product-form-wrapper">
                                 <div className="delivery-time">Delivery: <span>35 minutes</span></div>
-                                <form action="#" id="contact-forms" method="POST">
+                                <form  id="contact-forms">
                                     <div className="form-clt">
                                         <label className="select-crust">select-crust</label>
                                         <div className="nice-select" tabIndex="0">
@@ -106,7 +112,7 @@ const ProductDetails = () => {
                                     </div>
                                     <div className="form-clt">
                                         <label className="select-crust">Select Size</label>
-                                        <div className="nice-select" tabindex="0">
+                                        <div className="nice-select" tabIndex="0">
                                             <span className="current">
                                                 Choose an option
                                             </span>
@@ -129,7 +135,7 @@ const ProductDetails = () => {
                                             <p className="qty">
                                                 <button className="qtyminus" aria-hidden="true">&minus;</button>
                                                 <input type="number" name="qty" id="qty2" min="1" max="10" step="1" value="1"/>
-                                                <button className="qtyplus" aria-hidden="true">&plus;</button>
+                                                <button className="qtyplus" aria-hidden="true">+</button>
                                             </p>
                                         </div>
                                     </div>
@@ -150,11 +156,7 @@ const ProductDetails = () => {
                                 Description
                                 </a>
                             </li>
-                            <li className="nav-item">
-                                <a href="#additional" data-bs-toggle="tab" className="nav-link">
-                                Additional Information
-                                </a>
-                            </li>
+                            
                             <li className="nav-item">
                                 <a href="#review" data-bs-toggle="tab" className="nav-link">
                                 reviews (4)
@@ -215,26 +217,7 @@ const ProductDetails = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div id="additional" className="tab-pane fade">
-                                <div className="table-responsive">
-                                    <table className="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td>Weight</td>
-                                                <td>240 Ton</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Dimensions</td>
-                                                <td>20 × 30 × 40 cm</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Colors</td>
-                                                <td>Black, Blue, Green</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                           
                             <div id="review" className="tab-pane fade">
                                 <div className="review-items">
                                     <div className="admin-items d-flex flex-wrap flex-md-nowrap align-items-center pb-4">
@@ -525,7 +508,7 @@ const ProductDetails = () => {
                 </div>
             </div>
         </section>
-
+    <Footer/>
     </>
   )
 }
