@@ -21,15 +21,15 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const response = await axios.get(`${API_BASE_URL}/user/`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Token ${token}` }
         });
         setIsAuthenticated(true);
         setUserData(response.data);
       } catch (err) {
         console.error('Error fetching user:', err);
-        setIsAuthenticated(false);
-        setUserData(null);
-        localStorage.removeItem('token');
+        // setIsAuthenticated(false);
+        // setUserData(null);
+        // localStorage.removeItem('token');
       } finally {
         setLoading(false);
       }
@@ -45,11 +45,7 @@ export const AuthProvider = ({ children }) => {
   // Async login function
   const login = async (mobile_number, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login/`, { mobile_number, password },{
-        // header:{
-        //   "Content-Type":"Json/"
-        // }
-      });
+      const response = await axios.post(`${API_BASE_URL}/login/`, { mobile_number, password });
       if (response.status ===200){
         console.log(response,'response')
         const { tokens, user } = response.data;
@@ -77,6 +73,18 @@ export const AuthProvider = ({ children }) => {
     navigate('/')
     
   };
+
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    setIsAuthenticated(true);
+  } else {
+    setIsAuthenticated(false);
+  }
+}, []);
+
+
 console.log(isAuthenticated,"isAuthenticated")
   return (
     <AuthContext.Provider value={{ isAuthenticated, userData, login, logout, loading, userRole }}>

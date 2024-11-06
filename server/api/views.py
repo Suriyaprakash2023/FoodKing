@@ -54,3 +54,10 @@ class LoginView(APIView):
             return Response(data, status=status.HTTP_200_OK)
         print(serializer.errors, "serializer.errors")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user_serializer = UserSerializer(request.user)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)

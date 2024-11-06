@@ -6,6 +6,7 @@ import s3 from '/src/assets/website/img/shop-food/s3.png';
 import {Link} from 'react-router-dom';
 import bookingshape from "/src/assets/website/img/shape/booking-shape.png";
 import bg from "/src/assets/website/img/bg-image/food.jpg";
+import boy from "/src/assets/website/img/boy.png";
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -46,8 +47,8 @@ const Header = () => {
     const handleRegisterClose = () => setRegisterOpen(false);
 
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
-  
+    const { login,userData,isAuthenticated } = useContext(AuthContext);
+  console.log(isAuthenticated,"userData")
     const [email,setEmail] = useState("");
     const [mobile_number, setMobileNumber] = useState("");
     const password = mobile_number;
@@ -228,9 +229,17 @@ const Header = () => {
                                             </a>
                                         </div>
                                     </div>
-                                    <a  className="cart-icon">
-                                    <i className="far fa-shopping-basket"></i>
-                                    </a>
+                                    { isAuthenticated ? (
+                                        <a  className="cart d-flex flex-column align-items-center text-center">
+
+                                        <img src={boy} style={{ height: '44px',width: '46px',borderRadius: '50%'}}/>
+                                        <span>{userData.email}</span>
+                                       
+                                        </a>
+                                    ):
+                                    ('')
+                                    }
+                                    
                                 </div>
                                 <div className="header-button">
                                     <a className="theme-btn bg-red-2">

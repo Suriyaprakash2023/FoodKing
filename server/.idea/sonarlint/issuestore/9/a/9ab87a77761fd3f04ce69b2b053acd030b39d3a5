@@ -1,6 +1,5 @@
 
-kpython:S2208"GImport only needed names or import the module and then use its members.(µƒ½şÿÿÿÿ8¯·ë¨®2
-Lpython:S1172"/Remove the unused function parameter "request".(ôŞëÄûÿÿÿÿ
-Upython:S1481"1Replace unused local variable "created" with "_".(ÑË‚şÿÿÿÿ8ÇÑÓ¨®2
-kpython:S1763"GDelete this unreachable code or refactor the code to make it reachable.(Ìş³Åûÿÿÿÿ8ÉÑÓ¨®2
-Upython:S1481'"1Replace unused local variable "created" with "_".(ÑË‚şÿÿÿÿ8Ñ·à¨®2
+kpython:S2208"GImport only needed names or import the module and then use its members.(µƒ½şÿÿÿÿ8şßû®2
+Spython:S1172"/Remove the unused function parameter "request".(ôŞëÄûÿÿÿÿ8ÿßû®2
+Upython:S1481"1Replace unused local variable "created" with "_".(ÑË‚şÿÿÿÿ8ÿßû®2
+Upython:S1481)"1Replace unused local variable "created" with "_".(ÑË‚şÿÿÿÿ8ÿßû®2
