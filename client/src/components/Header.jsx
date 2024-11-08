@@ -48,7 +48,7 @@ const Header = () => {
 
     const navigate = useNavigate();
     const { login,userData,isAuthenticated } = useContext(AuthContext);
-  console.log(isAuthenticated,"userData")
+  console.log(isAuthenticated,"isAuthenticated")
     const [email,setEmail] = useState("");
     const [mobile_number, setMobileNumber] = useState("");
     const password = mobile_number;
@@ -197,40 +197,9 @@ const Header = () => {
                             </div>
                             <div className="header-right d-flex justify-content-end align-items-center">
                                 <div className="menu-cart">
-                                    <div className="cart-box">
-                                        <ul>
-                                            <li>
-                                                <img src={s2} alt="image"/>
-                                                <div className="cart-product">
-                                                    <a href="#0">grilled chiken</a>
-                                                    <span>168₹</span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <ul>
-                                            <li className="border-none">
-                                                <img src={s3} alt="image"/>
-                                                <div className="cart-product">
-                                                    <a href="#0">grilled chiken</a>
-                                                    <span>168₹</span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div className="shopping-items d-flex align-items-center justify-content-between">
-                                            <span>Shopping : ₹20.00</span>
-                                            <span>Total : ₹168.00</span>
-                                        </div>
-                                        <div className="cart-button d-flex justify-content-between mb-4">
-                                            <a  className="theme-btn">
-                                            View Cart
-                                            </a>
-                                            <a  className="theme-btn bg-red-2">
-                                            Checkout
-                                            </a>
-                                        </div>
-                                    </div>
+                                   
                                     { isAuthenticated ? (
-                                        <a  className="cart d-flex flex-column align-items-center text-center">
+                                        <a  className="d-flex flex-column align-items-center text-center">
 
                                         <img src={boy} style={{ height: '44px',width: '46px',borderRadius: '50%'}}/>
                                         <span>{userData.email}</span>

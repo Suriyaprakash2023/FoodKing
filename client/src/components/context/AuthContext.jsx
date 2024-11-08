@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState('');
   const [loading, setLoading] = useState(true);
   const [userRole,setUserRole] = useState('')
 
@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
           headers: { 'Authorization': `Token ${token}` }
         });
         setIsAuthenticated(true);
+        
         setUserData(response.data);
       } catch (err) {
         console.error('Error fetching user:', err);

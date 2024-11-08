@@ -60,4 +60,5 @@ class UserInfoView(APIView):
 
     def get(self, request, *args, **kwargs):
         user_serializer = UserSerializer(request.user)
+        print(user_serializer.data)
         return Response(user_serializer.data, status=status.HTTP_200_OK)
