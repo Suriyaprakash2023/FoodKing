@@ -1,11 +1,8 @@
 import {useState,useContext,useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import logo from '/src/assets/website/img/logo/logo.svg';
-import s2 from '/src/assets/website/img/shop-food/s2.png';
-import s3 from '/src/assets/website/img/shop-food/s3.png';
 import {Link} from 'react-router-dom';
 import bookingshape from "/src/assets/website/img/shape/booking-shape.png";
-import bg from "/src/assets/website/img/bg-image/food.jpg";
 import boy from "/src/assets/website/img/boy.png";
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -13,6 +10,12 @@ import Modal from '@mui/material/Modal';
 import AuthContext from '../components/context/AuthContext';
 import axios from 'axios';
 import {API_BASE_URL} from '../components/context/data';
+
+
+
+
+
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -48,11 +51,9 @@ const Header = () => {
 
     const navigate = useNavigate();
     const { login,userData,isAuthenticated } = useContext(AuthContext);
-  console.log(isAuthenticated,"isAuthenticated")
     const [email,setEmail] = useState("");
     const [mobile_number, setMobileNumber] = useState("");
     const password = mobile_number;
-    console.log(password)
     // const [password, setPassword] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errors, setErrors] = useState("");

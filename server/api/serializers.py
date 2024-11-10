@@ -14,17 +14,23 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         # Check if the email already exists
         if CustomUser.objects.filter(email=value).exists():
-            raise ValidationError("A user with this email already exists.")
+            raise serializers.ValidationError("A user with this email already exists.")
         return value
 
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = CustomUser(**validated_data)
         user.set_password(password)
+        
+        # Save the user first to get an ID
+        user.save()
+
+        # Add the user to the default 'user' group
         user_group, created = Group.objects.get_or_create(name='user')
         user.groups.add(user_group)
-        user.save()
+        
         return user
+
 
 
 class LoginSerializer(serializers.Serializer):

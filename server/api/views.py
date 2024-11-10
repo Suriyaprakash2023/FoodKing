@@ -45,12 +45,11 @@ class LoginView(APIView):
                 groups = "user"
             elif user.is_superuser:
                 groups = "admin"
-            print(user_groups, "is_user.groups")
             user_serializer = UserSerializer(user)
             data = user_serializer.data
             data["tokens"] = token.key
             data["groups"] = groups
-
+            print(data, "data")
             return Response(data, status=status.HTTP_200_OK)
         print(serializer.errors, "serializer.errors")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -83,6 +83,20 @@ import aboutburger from "/src/assets/website/img/about/burger.png";
 import offerburger from "/src/assets/website/img/offer/burger.png";
 import offerpizza from "/src/assets/website/img/offer/pizza.png";
 
+
+import "../assets/website/css/animate.css";
+import "../assets/website/css/bootstrap.min.css";
+import "../assets/website/css/font-awesome.css";
+import "../assets/website/css/magnific-popup.css";
+import "../assets/website/css/main.css";
+import "../assets/website/css/meanmenu.css";
+import "../assets/website/css/nice-select.css";
+import "../assets/website/css/swiper-bundle.min.css";
+
+
+
+
+
 const Index = () => {
     
     

@@ -83,14 +83,14 @@ const Shop = () => {
                                 </div>
                                 <div className="widget-categories">
                                     <ul>
-                                        <li><a href=""><i className="flaticon-burger"></i>burger</a></li>
-                                        <li><a href=""><i className="flaticon-chicken"></i>Fried Chiken</a></li>
-                                        <li><a href=""><i className="flaticon-french-fries"></i>French Fries</a></li>
-                                        <li><a href=""><i className="flaticon-pizza"></i>Hot Pizzas</a></li>
-                                        <li><a href=""><i className="flaticon-sandwich"></i>Sandwich</a></li>
-                                        <li><a href=""><i className="flaticon-bread"></i>Bread</a></li>
-                                        <li><a href=""><i className="flaticon-rice"></i>fried rice</a></li>
-                                        <li><a href=""><i className="flaticon-hotdog"></i>hot dog</a></li>
+                                        <li><i className="flaticon-burger"></i>burger</li>
+                                        <li><i className="flaticon-chicken"></i>Fried Chiken</li>
+                                        <li><i className="flaticon-french-fries"></i>French Fries</li>
+                                        <li><i className="flaticon-pizza"></i>Hot Pizzas</li>
+                                        <li><i className="flaticon-sandwich"></i>Sandwich</li>
+                                        <li><i className="flaticon-bread"></i>Bread</li>
+                                        <li><i className="flaticon-rice"></i>fried rice</li>
+                                        <li><i className="flaticon-hotdog"></i>hot dog</li>
                                     </ul>
                                 </div>
                             </div>
