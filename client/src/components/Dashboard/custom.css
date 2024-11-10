@@ -1,0 +1,16 @@
+/* custom.css */
+.text-primary {
+  color: rgb(245, 130, 32) !important;
+}
+
+.bg-primary {
+  background-color: rgb(245, 130, 32) !important;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem; /* Keep any other styles you need */
+}
+
+.border-primary{
+  border:2px solid rgb(245, 130, 32)!important;
+}
