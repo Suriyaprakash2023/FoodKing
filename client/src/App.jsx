@@ -25,8 +25,8 @@ function App() {
             <Route path='/contact' element={<Contact/>}/>
             <Route path='/product-details/' element={<ProductDetails/>}/>
             <Route path="/dashboard" element={<ProtectedRoute requiredRole="admin"><Dashboard /></ProtectedRoute>} />
-            <Route path="/dashboard-header" element={<ProtectedRoute requiredRole="admin"><DashboardHeader /></ProtectedRoute>} />
-            <Route path="/orders" element={<ProtectedRoute requiredRole="admin"><Orders /></ProtectedRoute>} />
+            <Route path="/dashboard-header" element={<DashboardHeader />} />
+            <Route path="/orders" element={<Orders />} />
 
           </Routes>
         </AuthProvider>
