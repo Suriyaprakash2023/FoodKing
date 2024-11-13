@@ -47,10 +47,13 @@ const Dashboard = () => {
 
       <main className="main-content"
       style={{
-        backgroundImage: `url(${bg}) !important`,
-        backgroundAttachment: 'fixed',
+        background: 'url("/src/assets/dashboard/images/dashboard.png")',
         backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+       
+       
       }}
+  
       >
     
         <DashboardHeader/>

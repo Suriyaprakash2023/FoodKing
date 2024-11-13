@@ -4,12 +4,22 @@ import DashboardSideNav from './DashboardSideNav'
 import DashboardFooter from './DashboardFooter';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import {Link} from 'react-router-dom';
 const Orders = () => {
   return (
     <>
       <DashboardSideNav/>
 
-      <main className="main-content">
+      <main className="main-content"
+      style={{
+        background: 'url("/src/assets/dashboard/images/dashboard.png")',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+       
+       
+      }}
+      >
       <DashboardHeader/>
       <div className="content-inner mt-5 py-0">
     <div className="row">
@@ -23,10 +33,7 @@ const Orders = () => {
                 <div className="card-body px-0">
                     <div className="iq-col-masonry m-0">
                         <button type="button" className="btn btn-outline-danger rounded iq-col-masonry-block">
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10.6654 5.33496L5.33203 10.6683" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              <path d="M10.6643 10.6663L5.33203 5.33301" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
+                        <SentimentVeryDissatisfiedIcon className='me-1'/>
                             Un Shipped Orders
                         </button>
 
@@ -51,6 +58,7 @@ const Orders = () => {
     </div>
     <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4">
         <div className="col">
+            <Link to='/order-details'>
             <div className="card order-history-card">
                 <div className="card-body">
                     <div className="d-flex align-items-center justify-content-between mb-5">
@@ -114,7 +122,9 @@ const Orders = () => {
                         </div>
                     </div>
                 </div>
-            </div>        </div>
+            </div>       
+            </Link>
+        </div>
         <div className="col">
             <div className="card order-history-card">
                 <div className="card-body">

@@ -4,6 +4,7 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+
 const DashboardSideNav = () => {
 
   // useEffect(() => {
@@ -119,7 +120,10 @@ const DashboardSideNav = () => {
               </Link>
              
             </li>
-            <li><hr className="hr-horizontal" /></li>
+            <li>
+              <hr className="hr-horizontal" />
+              
+            </li>
             
             <li className="nav-item">
               <Link to='/orders'
@@ -128,6 +132,22 @@ const DashboardSideNav = () => {
               >
                 <LocalShippingIcon/>
                 <span className="item-name">Orders</span>
+              
+              </Link>
+              
+            </li>
+            <li>
+              <hr className="hr-horizontal" />
+              
+            </li>
+            
+            <li className="nav-item">
+              <Link to='/dishes'
+                className="nav-link"
+                
+              >
+                <DinnerDiningIcon/>
+                <span className="item-name">Dishes</span>
               
               </Link>
               

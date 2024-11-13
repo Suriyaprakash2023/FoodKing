@@ -10,6 +10,9 @@ import Login from './components/Login';
 import { AuthProvider} from './components/context/AuthContext';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import DashboardHeader from './components/Dashboard/DashboardHeader';
+import OrderDetails from './components/Dashboard/OrderDetails';
+import Dishes from './components/Dashboard/Dishes';
+import DishDetails from './components/Dashboard/DishDetails';
 function App() {
 
   return (
@@ -27,6 +30,9 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute requiredRole="admin"><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard-header" element={<DashboardHeader />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/order-details" element={<OrderDetails />} />
+            <Route path="/dishes" element={<Dishes />} />
+            <Route path="/dish-details" element={<DishDetails />} />
 
           </Routes>
         </AuthProvider>
