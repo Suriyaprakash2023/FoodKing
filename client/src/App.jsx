@@ -13,6 +13,9 @@ import DashboardHeader from './components/Dashboard/DashboardHeader';
 import OrderDetails from './components/Dashboard/OrderDetails';
 import Dishes from './components/Dashboard/Dishes';
 import DishDetails from './components/Dashboard/DishDetails';
+import Payments from './components/Dashboard/Payments'
+import AddDish from './components/Dashboard/AddDish';
+
 function App() {
 
   return (
@@ -33,7 +36,8 @@ function App() {
             <Route path="/order-details" element={<OrderDetails />} />
             <Route path="/dishes" element={<Dishes />} />
             <Route path="/dish-details" element={<DishDetails />} />
-
+            <Route path='/payments' element={<Payments/>} />
+            <Route path='/add-dish' element={<AddDish/>} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

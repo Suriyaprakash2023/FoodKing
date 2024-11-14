@@ -1,6 +1,7 @@
 import DashboardFooter from "./DashboardFooter";
 import DashboardHeader from "./DashboardHeader";
 import DashboardSideNav from "./DashboardSideNav";
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import {Link} from "react-router-dom";
 const Dishes = () => {
   return (
@@ -95,9 +96,19 @@ const Dishes = () => {
             </div>
             <div className="col-lg-6">
               <div className="card">
-                <div className="card-header ">
-                  <h4 className="card-title list-main">Recommended</h4>
-                </div>
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <h4 className="card-title list-main">Recommended</h4>
+                <Link to='/add-dish'>
+                  <button className="btn btn-success w-5 h-5 rounded">
+                    <RestaurantMenuIcon/> add New Product
+                  </button>
+                </Link>
+              </div>
+
+
+
+              
+
                 <div className="card-body py-0">
                   <ul className="list-inline chat-list-main1">
                     <li className="py-5 border-bottom border-soft-primary">

@@ -15,8 +15,8 @@ const Dashboard = () => {
     // Load main site CSS
 
     import("/src/assets/dashboard/css/core/libs.min.css");
-    import("/src/assets/dashboard/css/aprycot.mine209.css?v=1.0.0");
-    import("/src/assets/dashboard/css/core/libs.min.css");
+    import("/src/assets/dashboard/css/aprycot.mine209.css");
+
 
 
     
@@ -35,6 +35,7 @@ const Dashboard = () => {
     import("/src/assets/dashboard/js/stepper.js");
     import("/src/assets/dashboard/js/form-wizard.js");
     import("/src/assets/dashboard/js/app.js");
+    
 
   }, []);
 
