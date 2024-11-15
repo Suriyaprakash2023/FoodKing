@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import CustomUser
+from .models import *
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
@@ -62,3 +62,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ("mobile_number", "name", "email", "address", "city","groups")
+
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = [
+             'name', 'description', 'mrp_price', 'selling_price', 
+            'offer_percentage', 'ratings', 'category', 'image'
+        ]
