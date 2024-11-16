@@ -1,66 +1,101 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DashboardSideNav from "./DashboardSideNav";
 import DashboardHeader from "./DashboardHeader";
 import DashboardFooter from "./DashboardFooter";
 import breadcrumb from "/src/assets/dashboard/images/dashboard.png";
 import axios from "axios";
-
+import {API_BASE_URL} from "../context/data";
 const AddDish = () => {
   const [dishName, setDishName] = useState("");
   const [dishCategory, setDishCategory] = useState("");
-  const [mrpPrice, setMrpPrice] = useState(0);
-  const [sellingPrice, setSellingPrice] = useState(0);
-  const [offerPercentage, setOfferPercentage] = useState(0);
+  const [mrpPrice, setMrpPrice] = useState();
+  const [sellingPrice, setSellingPrice] = useState();
+  const [offerPercentage, setOfferPercentage] = useState();
   const [dishImage, setDishImage] = useState(null);
   const [description, setDescription] = useState("");
-   console.log(typeof(offerPercentage),"offerPercentage")
+  const [successMessage,setSuccessMessage] = useState(false)
+  const [errorMessage,setErrorMessage] = useState(false)
+
+
+  useEffect(() => {
+    let timer;
+    if (successMessage || errorMessage) {
+      timer = setTimeout(() => {
+        setSuccessMessage(false);
+        setErrorMessage(false);
+      }, 5000); // 5 seconds
+    }
+
+    // Cleanup the timer when the component unmounts or messages change
+    return () => clearTimeout(timer);
+  }, [successMessage, errorMessage]);
+
+
+
   const handleFileChange = (e) => {
     setDishImage(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("name", dishName);
-    formData.append("category", dishCategory);
-    formData.append("mrp_price", mrpPrice);
-    formData.append("selling_price", sellingPrice);
-    formData.append("offer_percentage", offerPercentage);
-    formData.append("image", dishImage);
-    formData.append("description", description);
-      console.log(formData,"formdata")
-
-   // To check the type of offer_percentage specifically:
-const offerPercentageValue = formData.get("offer_percentage");
-console.log(typeof offerPercentageValue, "offer_percentage type");
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8008/add_new_add/",
-        formData,
-        {
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+    
+      // Create a FormData object
+      const formData = new FormData();
+    
+      // Add the file
+      if (dishImage) {
+        formData.append("image", dishImage); // Changed `dishImage` to `image`
+      }
+    
+      // Add other data as JSON
+      const jsonPayload = JSON.stringify({
+        name: dishName, // Changed `dishName` to `name`
+        category: dishCategory, // Changed `dishCategory` to `category`
+        mrp_price: mrpPrice, // Changed `mrpPrice` to `mrp_price`
+        selling_price: sellingPrice, // Changed `sellingPrice` to `selling_price`
+        offer_percentage: offerPercentage, // Changed `offerPercentage` to `offer_percentage`
+        description,
+      });
+    
+      formData.append("data", jsonPayload);
+      console.log(dishImage,"dishImage")
+      try {
+        const response = await axios.post(`${API_BASE_URL}/add_new_add/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+        });
+    
+        if (response.status === 201) {
+
+          setSuccessMessage(true);
+
+
+          setDishName("");
+          setDishCategory("");
+          setDishImage(null);
+          setDescription("");
+          setMrpPrice('');
+          setSellingPrice('');
+          setOfferPercentage('');
+          
+          
+         
+          
+
+        } else {
+          setErrorMessage(true);
+
         }
-      );
-
-      if (response.status === 201) {
-
-        alert("Dish added successfully!");
-
-      } else {
-
-        alert("Failed to add dish.");
-
+      } catch (error) {
+        console.log(error,"error")
+        setErrorMessage(true);
+        
       }
-    } catch (error) {
-      console.error("Error:", error);
-
-      alert("An error occurred. Please try again.");
-
-    }
-  };
+    };
+    
+  
 
   return (
     <>
@@ -74,8 +109,38 @@ console.log(typeof offerPercentageValue, "offer_percentage type");
         <div className="content-inner mt-5 py-0">
           <div className="">
             <div className="row d-flex justify-content-center">
+              
               <div className="col-sm-12 col-lg-11">
+              {
+                  successMessage ? (
+                    <div className="alert alert-solid alert-success alert-dismissible fade show mb-3" role="alert">
+                      <span>
+                        <a href="https://emoji.gg/emoji/success">
+                          <img src="https://cdn3.emoji.gg/emojis/success.gif" width="34px" height="34px" alt="success"/>
+                        </a>
+                      </span>
+                      <span>Dish Created Successfully Please Check Menu List..!</span>
+                      <button type="button" className="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                  ) :
+                  ('')
+
+              }
+
+              {
+                errorMessage ? (
+                  <div className="alert alert-solid alert-danger alert-dismissible fade show mb-3" role="alert">
+                      <span>
+                        <img src="/src/assets/dashboard/images/error.gif" width="34px" height="34px" alt="danger"/>
+                      </span>
+                      <span> Something Went Wrong Pleae Try Again..!</span>
+                      <button type="button" className="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                ) :
+                ('')
+              }
                 <div className="card">
+                
                   <div className="card-header d-flex justify-content-between">
                     <div className="header-title">
                       <h4 className="card-title"> Add New Dish</h4>
@@ -212,8 +277,8 @@ console.log(typeof offerPercentageValue, "offer_percentage type");
                             className="form-control"
                             accept=".png,.jpg,.jpeg"
                             id="validationDefault05"
-                            required
                             onChange={handleFileChange}
+                            required
                           />
                         </div>
                         <div className="col-md-12 mb-3">

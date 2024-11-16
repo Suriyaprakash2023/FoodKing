@@ -1,11 +1,43 @@
+import { useState,useEffect } from "react";
 import DashboardFooter from "./DashboardFooter";
 import DashboardHeader from "./DashboardHeader";
 import DashboardSideNav from "./DashboardSideNav";
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import {Link} from "react-router-dom";
+import {API_BASE_URL} from '../context/data';
+import axios from "axios";
+
 const Dishes = () => {
+  const [dishes, setDishes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(()=>{
+    const fetchDishes = async () => {
+      try {
+
+      setLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/dishes/`);
+      setDishes(response.data); 
+      setLoading(false);
+
+      } catch (error) {
+        console.error("Error fetching dishes:", error);
+        setError(true);
+
+      }
+    };
+
+    fetchDishes();
+  },[])
+
   return (
-    <>   <DashboardSideNav />
+    <>   
+   
+
+
+
+      <DashboardSideNav />
      
       <main className="main-content"
       style={{
@@ -97,7 +129,7 @@ const Dishes = () => {
             <div className="col-lg-6">
               <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center">
-                <h4 className="card-title list-main">Recommended</h4>
+                <h4 className="card-title list-main">New Dishes</h4>
                 <Link to='/add-dish'>
                   <button className="btn btn-success w-5 h-5 rounded">
                     <RestaurantMenuIcon/> add New Product

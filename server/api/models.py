@@ -93,10 +93,10 @@ class Item(models.Model):
     available = models.BooleanField(default=True,blank=True, null=True)
     image = models.ImageField(blank=True,null=True)
 
-    @property
-    def selling_price(self):
-        discount = (self.offer_percentage / 100) * self.mrp_price
-        return self.mrp_price - discount
+    # @property
+    # def selling_price(self):
+    #     discount = (int(self.offer_percentage) / 100) * self.mrp_price
+    #     return self.mrp_price - discount
 
     def __str__(self):
         return f"{self.name} - Selling Price: {self.selling_price}"

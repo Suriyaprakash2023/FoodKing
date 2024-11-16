@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
-
+import json
 
 from .serializers import *
 
@@ -65,10 +65,33 @@ class UserInfoView(APIView):
 
 class DishCreateView(APIView):
     def post(self, request, *args, **kwargs):
-        data=request.data
-        print(type(data['offer_percentage']) )
-        serializer = ItemSerializer(data=request.data)
+        # Extract and parse JSON data
+        data = request.data.get('data')
+        img = request.FILES.get('image')
+
+        # Parse `data` if it's a JSON string
+        try:
+            if isinstance(data, str):
+                data = json.loads(data)  # Parse JSON string to dictionary
+            
+            # Add image to the parsed data
+            data['image'] = img
+
+            # Debugging logs
+            print(request.FILES.get('dishImage'), "img")
+            print(data, "data")
+        except json.JSONDecodeError as e:
+            return Response({'error': f'Invalid JSON format: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate and save using serializer
+        serializer = ItemSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({ "message": "User registered successfully!",}, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors,"serializer.errors")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class Dishes(APIView):
+    def get(self,request):
+        return Response({"message":"owen creation"},status=status.HTTP_200_OK)

@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('user/', UserInfoView.as_view(), name='user'),
     path('add_new_add/', DishCreateView.as_view(), name='add_new_add'),
+    path('dishes/', Dishes.as_view(), name='dishes'),
 ]
