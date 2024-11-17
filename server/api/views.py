@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -93,5 +93,67 @@ class DishCreateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class Dishes(APIView):
+    def get(self, request):
+        # Get all items
+        items = Item.objects.filter(available=True)
+        
+        # Group items by category
+        grouped_data = {}
+        for category in items.values_list('category', flat=True).distinct():
+            if category:  # Ignore null categories
+                grouped_data[category] = {
+                    "items": ItemSerializer(items.filter(category=category), many=True).data,
+                    "count": items.filter(category=category).count()
+                }
+        
+        # Total category count
+        category_count = len(grouped_data.keys())
+        return Response({
+            "categories": grouped_data,
+            "category_count": category_count
+        },status=status.HTTP_200_OK)
+
+
+from rest_framework.exceptions import NotFound
+class DishesDetails(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request,id):
+        item = Item.objects.get(id=id)
+        serializers = ItemSerializer(item)
+        
+        return Response(serializers.data,status=status.HTTP_200_OK)
+    
+
+    def put(self, request, id):
+        
+        try:
+            print('hii')
+            item = Item.objects.get(id=id)
+        except Item.DoesNotExist:
+            raise NotFound(detail="Dish not found")
+
+        print(request.data,"request.data")
+        # Deserialize and validate the input data
+        serializer = ItemSerializer(item, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors,"serializer.errors")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class NewDishes(APIView):
     def get(self,request):
-        return Response({"message":"owen creation"},status=status.HTTP_200_OK)
+        items = Item.objects.all().order_by('-id')[:5]
+        serializer = ItemSerializer(items,many =True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    
+class CategoryDishesView(APIView):
+    def get(self,request,category):
+        items = Item.objects.filter(category=category)
+        serializer = ItemSerializer(items,many =True)
+
+        return Response(serializer.data,status=status.HTTP_200_OK)

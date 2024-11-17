@@ -35,7 +35,7 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/order-details" element={<OrderDetails />} />
             <Route path="/dishes" element={<Dishes />} />
-            <Route path="/dish-details" element={<DishDetails />} />
+            <Route path="/dish-details/:id" element={<DishDetails />} />
             <Route path='/payments' element={<Payments/>} />
             <Route path='/add-dish' element={<AddDish/>} />
           </Routes>

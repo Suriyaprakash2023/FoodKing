@@ -96,7 +96,28 @@ const Payments = () => {
             </div>
           </div>
         </div>
-        <DashboardFooter className=''/>
+        
+        <footer className="footer d-sm-block"  style={{ position: 'absolute', bottom: 0, width: '100%' }}>
+        <div className="footer-body">
+          <ul className="left-panel list-inline mb-0 p-0">
+            <li className="list-inline-item">
+              <a >Privacy Policy</a>
+            </li>
+            <li className="list-inline-item">
+              <a >Terms of Use</a>
+            </li>
+          </ul>
+          <div className="right-panel">
+            ©
+            2024
+            Suriya, Made with
+            <span className="text-danger">
+             💕
+            </span>
+            by <a href="">FoodKing Design</a>.
+          </div>
+        </div>
+      </footer>
       </main>
     </>
   );

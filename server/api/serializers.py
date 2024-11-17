@@ -69,6 +69,7 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = [
-             'name', 'description', 'mrp_price', 'selling_price', 
+             'id','name', 'description', 'mrp_price', 'selling_price', 
             'offer_percentage', 'ratings', 'category', 'image'
         ]
+

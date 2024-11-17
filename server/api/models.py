@@ -92,7 +92,7 @@ class Item(models.Model):
     category = models.CharField(max_length=100,blank=True, null=True)
     available = models.BooleanField(default=True,blank=True, null=True)
     image = models.ImageField(blank=True,null=True)
-
+    
     # @property
     # def selling_price(self):
     #     discount = (int(self.offer_percentage) / 100) * self.mrp_price
