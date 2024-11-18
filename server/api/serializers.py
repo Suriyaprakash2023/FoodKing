@@ -70,6 +70,6 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = [
              'id','name', 'description', 'mrp_price', 'selling_price', 
-            'offer_percentage', 'ratings', 'category', 'image'
+            'offer_percentage', 'ratings', 'category', 'image','available'
         ]
 

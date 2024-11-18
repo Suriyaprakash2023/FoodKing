@@ -1489,24 +1489,7 @@ const Index = () => {
                             style={{ backgroundImage: `url(${bookingshape})` }}>
                                 <h4 className="text-center text-white">create an reservation</h4>
                                 <div className="booking-items">
-                                    <div className="form-clt">
-                                        <div className="nice-select" tabIndex="0">
-                                            <span className="current">
-                                            no of person
-                                            </span>
-                                            <ul className="list">
-                                                <li data-value="1" className="option selected">
-                                                    no of person
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    no of person
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    no of person
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                   
                                     <div className="form-clt">
                                         <input type="text" name="number" id="number" placeholder="phone number"/>
                                         <div className="icon">

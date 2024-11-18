@@ -7,7 +7,7 @@
 local_settings.py
 
 #Migration files
-*.sqlite3
+# *.sqlite3
 *.pyc
 migrations/
 
@@ -210,10 +210,9 @@ __pycache__/
 *.pyc
 *.pyc
 *.xml
-db.sqlite3
+# db.sqlite3
 
 
-api/management/data/payments (4) copy.csv
 
 
-db.json
+# db.json

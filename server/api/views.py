@@ -68,7 +68,7 @@ class DishCreateView(APIView):
         # Extract and parse JSON data
         data = request.data.get('data')
         img = request.FILES.get('image')
-
+        print(data,"data")
         # Parse `data` if it's a JSON string
         try:
             if isinstance(data, str):
@@ -94,7 +94,7 @@ class DishCreateView(APIView):
 class Dishes(APIView):
     def get(self, request):
         # Get all items
-        items = Item.objects.filter(available=True)
+        items = Item.objects.all()
         
         # Group items by category
         grouped_data = {}
@@ -135,7 +135,6 @@ class DishesDetails(APIView):
         data = request.data.get('data')
         img = request.FILES.get('image')
 
-        print(img,"img")
         # Parse `data` if it's a JSON string
         try:
             if isinstance(data, str):
@@ -158,7 +157,24 @@ class DishesDetails(APIView):
             print(serializer.errors,"serializer.errors")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, id, format=None):
+        try:
+            # Find the dish by ID
+            dish = Item.objects.get(id=id)
 
+            dish.delete()
+
+            return Response(
+                {"detail": "Dish deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT  # 204 No Content means successful deletion
+            )
+
+        except Item.DoesNotExist:
+            return Response(
+                {"detail": "Dish not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
 
 
 class NewDishes(APIView):

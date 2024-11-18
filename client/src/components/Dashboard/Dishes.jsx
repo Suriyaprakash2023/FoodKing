@@ -3,7 +3,7 @@ import DashboardFooter from "./DashboardFooter";
 import DashboardHeader from "./DashboardHeader";
 import DashboardSideNav from "./DashboardSideNav";
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
-import {Link} from "react-router-dom";
+import {Link,useLocation } from "react-router-dom";
 import {API_BASE_URL} from '../context/data';
 import axios from "axios";
 
@@ -14,6 +14,24 @@ const Dishes = () => {
   const [selectedCategory, setSelectedCategory] = useState(null); // Tracks the selected category
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  // const [successMessage, setSuccessMessage] = useState(false);
+
+  const location = useLocation();
+  const successMessage = location.state?.successMessage;
+
+
+  useEffect(() => {
+    let timer;
+    if (successMessage || error) {
+      timer = setTimeout(() => {
+        // setSuccessMessage(false);
+        setError(false);
+      }, 5000); // 5 seconds
+    }
+
+    // Cleanup the timer when the component unmounts or messages change
+    return () => clearTimeout(timer);
+  }, [successMessage, error]);
 
 
   useEffect(()=>{
@@ -22,6 +40,7 @@ const Dishes = () => {
 
       setLoading(true);
       const response = await axios.get(`${API_BASE_URL}/dishes/`);
+      console.log(response.data,"response.data")
       setDishes(response.data); 
       setLoading(false);
 
@@ -106,6 +125,32 @@ const Dishes = () => {
       <DashboardHeader />
         <div className="content-inner mt-5 py-0">
           <div className="row">
+            
+          {successMessage && (
+                <div
+                  className="alert alert-solid alert-success alert-dismissible fade show mb-3"
+                  role="alert"
+                >
+                  <span>
+                    <a href="https://emoji.gg/emoji/success">
+                      <img
+                        src="https://cdn3.emoji.gg/emojis/success.gif"
+                        width="34px"
+                        height="34px"
+                        alt="success"
+                      />
+                    </a>
+                  </span>
+                  <span>Dish Deleted Successfully..!</span>
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                  ></button>
+                </div>
+              )}
+
             <div className="col-lg-3">
               <div className="card">
                 <div className="card-header border-0">

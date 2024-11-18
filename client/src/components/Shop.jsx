@@ -115,7 +115,7 @@ const Shop = () => {
                                                 <span className="fas fa-star"></span>
                                                 <span className="fas fa-star color-bg"></span>
                                             </div>
-                                            <h4><a href="">ruti with chiken</a></h4>
+                                            <h4><a >ruti with chiken</a></h4>
                                             <div className="post-price">
                                                 <span className="theme-color-2">$30.52</span>
                                                 <span>$28.52</span>
@@ -135,7 +135,7 @@ const Shop = () => {
                                                 <span className="fas fa-star"></span>
                                                 <span className="fas fa-star color-bg"></span>
                                             </div>
-                                            <h4><a href="">ruti with chiken</a></h4>
+                                            <h4><a >ruti with chiken</a></h4>
                                             <div className="post-price">
                                                 <span className="theme-color-2">$30.52</span>
                                                 <span>$28.52</span>
@@ -153,7 +153,7 @@ const Shop = () => {
                                                 <span className="fas fa-star"></span>
                                                 <span className="fas fa-star color-bg"></span>
                                             </div>
-                                            <h4><a href="">ruti with chiken</a></h4>
+                                            <h4><a >ruti with chiken</a></h4>
                                             <div className="post-price">
                                                 <span className="theme-color-2">$30.52</span>
                                                 <span>$28.52</span>
@@ -172,7 +172,7 @@ const Shop = () => {
                                                 <span className="fas fa-star"></span>
                                                 <span className="fas fa-star color-bg"></span>
                                             </div>
-                                            <h4><a href="">ruti with chiken</a></h4>
+                                            <h4><a >ruti with chiken</a></h4>
                                             <div className="post-price">
                                                 <span className="theme-color-2">$30.52</span>
                                                 <span>$28.52</span>
@@ -186,11 +186,11 @@ const Shop = () => {
                     <div className="col-xl-9 col-lg-8 order-1 order-md-2">
                         <div className="woocommerce-notices-wrapper">
                             <div className="product-showing">
-                                <h5><a href=""><span><img src="/src/assets/website//img/filter.png" alt="img"/></span> Filtering</a></h5>
+                                <h5><a ><span><img src="/src/assets/website//img/filter.png" alt="img"/></span> Filtering</a></h5>
                                 <h5>Showing <span>1–12</span> of 27 results</h5>
                             </div>
                             <div className="form-clt">
-                                <h6>Sort by: <a href=""><i className="fal fa-sort-alt"></i></a></h6>
+                                <h6>Sort by: <a ><i className="fal fa-sort-alt"></i></a></h6>
                                 <div className="nice-select" tabIndex="0">
                                     <span className="current">
                                     Price
@@ -211,10 +211,10 @@ const Shop = () => {
                                     </ul>
                                 </div>
                                 <div className="icon">
-                                    <a href=""><i className="fas fa-th"></i></a>
+                                    <a ><i className="fas fa-th"></i></a>
                                 </div>
                                 <div className="icon-2">
-                                    <a href=""><i className="fas fa-list"></i></a>
+                                    <a ><i className="fas fa-list"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +222,7 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/pasta-2.png" alt="product-img"/>
@@ -237,7 +237,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">Chiness pasta</a>
+                                            <a >Chiness pasta</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -257,7 +257,7 @@ const Shop = () => {
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -265,7 +265,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">Whopper Burger King</a>
+                                            <a >Whopper Burger King</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -280,14 +280,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/pizza-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -295,7 +295,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">delicious burger</a>
+                                            <a >delicious burger</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -310,14 +310,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/ruti.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -325,7 +325,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">ruti with chiken</a>
+                                            <a >ruti with chiken</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -340,14 +340,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/grilled-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -355,7 +355,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">grilled chiken</a>
+                                            <a >grilled chiken</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -370,14 +370,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/main-food-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -385,7 +385,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">delicious burger</a>
+                                            <a >delicious burger</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -400,14 +400,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/french-fry-3.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -415,7 +415,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">ruti with chiken</a>
+                                            <a >ruti with chiken</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -430,14 +430,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/fried-chicken-2.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -445,7 +445,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">grilled chiken</a>
+                                            <a >grilled chiken</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -460,14 +460,14 @@ const Shop = () => {
                             <div className="col-xl-4 col-lg-6 col-md-6">
                                 <div className="catagory-product-card-2 shadow-style text-center">
                                     <div className="icon">
-                                        <a href=""><i className="far fa-heart"></i></a>
+                                        <a ><i className="far fa-heart"></i></a>
                                     </div>
                                     <div className="catagory-product-image">
                                         <img src="/src/assets/website//img/food/french-fry-4.png" alt="product-img"/>
                                     </div>
                                     <div className="catagory-product-content">
                                         <div className="catagory-button">
-                                            <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                            <a  className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
                                         </div>
                                         <div className="info-price d-flex align-items-center justify-content-center">
                                             <p>-5%</p>
@@ -475,7 +475,7 @@ const Shop = () => {
                                             <span>$28.52</span>
                                         </div>
                                         <h4>
-                                            <a href="">delicious burger</a>
+                                            <a >delicious burger</a>
                                         </h4>
                                         <div className="star">
                                             <span className="fas fa-star"></span>
@@ -523,7 +523,7 @@ const Shop = () => {
                             <span className="theme-color-3">delivery</span> challage
                         </h2>
                     </div>
-                    <a href="" className="theme-btn bg-white wow fadeInUp" data-wow-delay=".5s">
+                    <a  className="theme-btn bg-white wow fadeInUp" data-wow-delay=".5s">
                     <span className="button-content-wrapper d-flex align-items-center">
                     <span className="button-icon"><i className="flaticon-delivery"></i></span>
                     <span className="button-text">order now</span>

@@ -11,11 +11,21 @@ const AddDish = () => {
   const [mrpPrice, setMrpPrice] = useState();
   const [sellingPrice, setSellingPrice] = useState();
   const [offerPercentage, setOfferPercentage] = useState();
+  const [available, setAvailable] = useState(true);
   const [dishImage, setDishImage] = useState(null);
   const [description, setDescription] = useState("");
   const [successMessage,setSuccessMessage] = useState(false)
   const [errorMessage,setErrorMessage] = useState(false)
 
+
+
+  const [ratings, setRatings] = useState(null);
+  const [hover, setHover] = useState(null);
+  const [totalStars, setTotalStars] = useState(5);
+
+  const handleChange = (e) => {
+    setTotalStars(parseInt(Boolean(e.target.value, 10) ? e.target.value : 5));
+  };
 
   useEffect(() => {
     let timer;
@@ -55,6 +65,8 @@ const AddDish = () => {
         mrp_price: mrpPrice, // Changed `mrpPrice` to `mrp_price`
         selling_price: sellingPrice, // Changed `sellingPrice` to `selling_price`
         offer_percentage: offerPercentage, // Changed `offerPercentage` to `offer_percentage`
+        available:available,
+        ratings:ratings,
         description,
       });
     
@@ -75,6 +87,8 @@ const AddDish = () => {
           setDishName("");
           setDishCategory("");
           setDishImage(null);
+          setRatings(null);
+          setAvailable(true);
           setDescription("");
           setMrpPrice('');
           setSellingPrice('');
@@ -187,6 +201,9 @@ const AddDish = () => {
                             <option value="Chicken">Chicken</option>
                             <option value="Chinese">Chinese</option>
                             <option value="Pasta">Pasta</option>
+                            <option value="French Fries">French Fries</option>
+                            <option value="Sandwich">Sandwich</option>
+                            <option value="Fried Rice">Fried Rice</option>
                             <option value="Pizza">Pizza</option>
                             <option value="Deserts">Deserts</option>
                           </select>
@@ -265,6 +282,26 @@ const AddDish = () => {
                             }}
                           />
                         </div>
+
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label" htmlFor="exampleInputEmail3">Dish Category</label>
+                           
+                            <select
+                              className="form-select"
+                              id="validationDefault04"
+                              required
+                              value={String(available)} // Convert the boolean to a string for matching
+                              onChange={(e) => setAvailable(e.target.value === "true")} // Convert back to boolean
+                            >
+                              <option disabled value="">
+                                Choose Dish Category...
+                              </option>
+                              <option value="true">Available</option>
+                              <option value="false">Unavailable</option>
+                            </select>
+                        </div>
+
+
                         <div className="col-md-6 mb-3">
                           <label
                             className="form-label"
@@ -281,6 +318,51 @@ const AddDish = () => {
                             required
                           />
                         </div>
+                        <div className="col-md-6 mb-3">
+                          <label
+                            className="form-label"
+                            htmlFor="validationDefault05"
+                          >
+                            Rating
+                          </label> <br/>
+                         
+
+                          {[...Array(totalStars)].map((_, index) => {
+                          const currentRating = index + 1;
+
+                          return (
+                            <label key={index}>
+                              <input
+                                type="radio"
+                                name="rating"
+                                value={currentRating}
+                                onChange={() => setRatings(currentRating)}
+                                className="d-none"
+                              />
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill={currentRating <= (hover || ratings) ? "#ffc107" : "#e4e5e9"}
+                                style={{
+                                  width: "2rem",
+                                  height: "2rem",
+                                  cursor: "pointer",
+                                  margin: "5px",
+                                }}
+                                onMouseEnter={() => setHover(currentRating)}
+                                onMouseLeave={() => setHover(null)}
+                              >
+                                <path d="M12 .587l3.668 7.431 8.2 1.2-5.934 5.798 1.4 8.184L12 18.897l-7.334 3.866 1.4-8.184L.132 9.218l8.2-1.2L12 .587z" />
+                              </svg>
+                            </label>
+                          );
+                        })}
+
+
+
+                        </div>
+
+
                         <div className="col-md-12 mb-3">
                           <label
                             className="form-label"
