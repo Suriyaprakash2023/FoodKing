@@ -1,5 +1,5 @@
 #media/
-media/
+# media/
 *.pyc
 .jpg
 .png

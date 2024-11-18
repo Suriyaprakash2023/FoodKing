@@ -79,7 +79,6 @@ class DishCreateView(APIView):
 
             # Debugging logs
             print(request.FILES.get('dishImage'), "img")
-            print(data, "data")
         except json.JSONDecodeError as e:
             return Response({'error': f'Invalid JSON format: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,14 +131,32 @@ class DishesDetails(APIView):
         except Item.DoesNotExist:
             raise NotFound(detail="Dish not found")
 
-        print(request.data,"request.data")
-        # Deserialize and validate the input data
-        serializer = ItemSerializer(item, data=request.data, partial=True)
+         # Extract and parse JSON data
+        data = request.data.get('data')
+        img = request.FILES.get('image')
+
+        print(img,"img")
+        # Parse `data` if it's a JSON string
+        try:
+            if isinstance(data, str):
+                data = json.loads(data)  # Parse JSON string to dictionary
+            
+            # Add image to the parsed data
+            data['image'] = img
+
+            # Debugging logs
+            print(request.FILES.get('dishImage'), "img")
+        except json.JSONDecodeError as e:
+            return Response({'error': f'Invalid JSON format: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate and save using serializer
+        serializer = ItemSerializer(item, data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        print(serializer.errors,"serializer.errors")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({ "message": "User registered successfully!",}, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors,"serializer.errors")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

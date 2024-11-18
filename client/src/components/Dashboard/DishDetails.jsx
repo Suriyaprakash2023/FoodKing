@@ -13,6 +13,7 @@ const DishDetails = () => {
   const [mrpPrice, setMrpPrice] = useState();
   const [sellingPrice, setSellingPrice] = useState();
   const [offerPercentage, setOfferPercentage] = useState();
+  const [available, setAvailable] = useState();
   const [dishImage, setDishImage] = useState(null);
   const [description, setDescription] = useState("");
   const [successMessage,setSuccessMessage] = useState(false)
@@ -73,6 +74,7 @@ const DishDetails = () => {
       mrp_price: mrpPrice, // Changed `mrpPrice` to `mrp_price`
       selling_price: sellingPrice, // Changed `sellingPrice` to `selling_price`
       offer_percentage: offerPercentage, // Changed `offerPercentage` to `offer_percentage`
+      
       description,
     });
   
@@ -294,6 +296,24 @@ const DishDetails = () => {
                             }}/>
                         </div>
                         <div className="form-group">
+                            <label className="form-label" htmlFor="exampleInputEmail3">Dish Category</label>
+                           
+                            <select
+                            className="form-select"
+                            id="validationDefault04"
+                            required
+                            value={dishCategory}
+                            onChange={(e) => setDishCategory(e.target.value)}
+                          >
+                            <option disabled value="">
+                              Choose Dish Category...
+                            </option>
+                            <option value="1">Avaliable</option>
+                            <option value="0">Un Avaliable</option>
+                            
+                          </select>
+                        </div>
+                        <div className="form-group">
                             <label className="form-label" htmlFor="exampleInputEmail3"> Dish Image</label>
                             <input
                             type="file"
@@ -317,7 +337,7 @@ const DishDetails = () => {
                         
                         </div>
                         <button type="submit" className="btn btn-success rounded">Submit</button>
-                        <button type="submit" className="btn btn-danger rounded">cancel</button>
+                        <button type="reset" className="btn btn-danger rounded">cancel</button>
                     </form>
                 </div>
             </div>
