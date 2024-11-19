@@ -68,7 +68,6 @@ class DishCreateView(APIView):
         # Extract and parse JSON data
         data = request.data.get('data')
         img = request.FILES.get('image')
-        print(data,"data")
         # Parse `data` if it's a JSON string
         try:
             if isinstance(data, str):
@@ -176,10 +175,23 @@ class DishesDetails(APIView):
             )
         
 
+class ProductDetails(APIView):
+    def get(self, request,id):
+        item = Item.objects.get(id=id)
+        category = item.category
+        related_category = Item.objects.filter(category= category).exclude(id=id)
+        print(related_category,"related_item")
+        product_item = ItemSerializer(item)
+        related_items = ItemSerializer(related_category,many=True)
+        print(related_items.data,"related_items")
+
+        return Response({"product_data":product_item.data,"related_items":related_items.data},status=status.HTTP_200_OK)
+    
+
 
 class NewDishes(APIView):
     def get(self,request):
-        items = Item.objects.all().order_by('-id')[:5]
+        items = Item.objects.all().order_by('-id')[:8]
         serializer = ItemSerializer(items,many =True)
         return Response(serializer.data,status=status.HTTP_200_OK)
     
@@ -190,3 +202,16 @@ class CategoryDishesView(APIView):
         serializer = ItemSerializer(items,many =True)
 
         return Response(serializer.data,status=status.HTTP_200_OK)
+
+
+class ShopView(APIView):
+    def get(self,request):
+        categories = Item.objects.values_list('category', flat=True).distinct()[:6]
+        categories = [category for category in categories if category]  # Remove None or blank categories
+
+        new_items = Item.objects.all().order_by('-id')[:6]
+        new_arrival = ItemSerializer(new_items,many =True)
+
+        all_items = Item.objects.all()
+        all_dishes = ItemSerializer(all_items,many =True)
+        return Response({"categories":categories,"new_arrival":new_arrival.data,"all_dishes":all_dishes.data},status=status.HTTP_200_OK)

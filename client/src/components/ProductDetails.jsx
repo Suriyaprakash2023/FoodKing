@@ -12,11 +12,44 @@ import tomato from "/src/assets/website/img/tomato.png";
 import chilli from "/src/assets/website/img/chilli.png";
 import deliveryman2 from "/src/assets/website/img/delivery-man-2.png";
 
-import {Link} from 'react-router-dom';
+
 import Header from './Header';
 import Footer from './Footer';
+import axios from 'axios';
+import {useEffect,useState} from 'react';
+import { API_BASE_URL } from "./context/data";
+import {Link, useParams,useNavigate } from "react-router-dom";
 
 const ProductDetails = () => {
+
+    const { id } = useParams(); // Extract `dishId` from the URL
+    const navigate = useNavigate();
+    const [dish, setDish] = useState([]); // State to store dish details
+    const [relatedDishes, setRelatedDishes] = useState([]);
+
+    console.log(dish,"pro")
+  // Fetch the dish details
+  const dishDetail = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/product-details/${id}`);
+      if (response.status === 200) {
+        console.log(response.data, "product.data");
+        setDish(response.data.product_data); // Set dish details
+        setRelatedDishes(response.data.related_items)
+      }
+    } catch (error) {
+      console.error("Error fetching dish details", error);
+    }
+  };
+
+  // useEffect hook to call dishDetail on component mount or when id/token changes
+  useEffect(() => {
+    if (id ) {
+      dishDetail();
+    }
+  }, [id]);
+
+
   return (
     <>
         <Header/>
@@ -51,33 +84,36 @@ const ProductDetails = () => {
                         <div className="col-xl-4 col-lg-6">
                             <div className="product-image-items">
                                 <div className="product-image">
-                                    <img src={details1} alt="img" className="w-100"/>
+                                    {/* <img src={details1} alt="img" className="w-100"/> */}
+                                    <img src={`${API_BASE_URL}/${dish.image}`} alt={dish.name} className="w-100"/>
                                 </div>
                             </div>
                         </div>
                         <div className="col-xl-5 col-lg-6">
                             <div className="product-details-content">
                                 <div className="star pb-3">
-                                    <span>-5%</span>
-                                    <a href="#"> <i className="fas fa-star"></i></a>
-                                    <a href="#"><i className="fas fa-star"></i></a>
-                                    <a href="#"> <i className="fas fa-star"></i></a>
-                                    <a href="#"><i className="fas fa-star"></i></a>
-                                    <a href="#" className="color-bg"> <i className="fas fa-star"></i></a>
-                                    <a href="#" className="text-color">( 2 Reviews )</a>
+                                    <span>-{dish.offer_percentage}%</span>
+                                    <div className="star-ratings">
+                                        {Array(5)
+                                            .fill()
+                                            .map((_, index) => (
+                                                <a href="#" key={index}>
+                                                    <i
+                                                        className={`fas fa-star ${
+                                                            index < dish.ratings ? '' : 'text-muted'
+                                                        }`}
+                                                    ></i>
+                                                </a>
+                                            ))}
+                                    </div>
                                 </div>
-                                <h3 className="pb-3">Whopper Burger King</h3>
+                                <h3 className="pb-3">{dish.name}</h3>
                                 <div className="price-list d-flex align-items-center mb-4">
-                                    <span>₹ 4,600.00</span>
-                                    <del>₹ 4,600.00</del>
+                                    <span>₹ {dish.selling_price}</span>
+                                    <del >₹ {dish.mrp_price}</del>
                                 </div>
                                 <p className="mb-4">
-                                    There are many variations of passages of Lorem Ipsum available, but majority
-                                    have suffered teration in some form, by injected humour, or randomised
-                                </p>
-                                <p>
-                                    There are many variations of passages of Lorem Ipsum available, but majority
-                                    have suffered teration in some form, by injected humour, or randomised
+                                {dish.description ? dish.description.slice(0, 250) : ''}
                                 </p>
                                 <div className="social-icon d-flex align-items-center">
                                     <a href="#"><i className="fab fa-facebook-f"></i></a>
@@ -90,45 +126,8 @@ const ProductDetails = () => {
                         <div className="col-xl-3 col-lg-4">
                             <div className="product-form-wrapper">
                                 <div className="delivery-time">Delivery: <span>35 minutes</span></div>
-                                <form  id="contact-forms">
-                                    <div className="form-clt">
-                                        <label className="select-crust">select-crust</label>
-                                        <div className="nice-select" tabIndex="0">
-                                            <span className="current">
-                                                Choose an option
-                                            </span>
-                                            <ul className="list">
-                                                <li data-value="1" className="option selected">
-                                                    Original Crust
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    Thick Crust
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    Double Crust
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="form-clt">
-                                        <label className="select-crust">Select Size</label>
-                                        <div className="nice-select" tabIndex="0">
-                                            <span className="current">
-                                                Choose an option
-                                            </span>
-                                            <ul className="list">
-                                                <li data-value="1" className="option selected">
-                                                    Small - 22cm
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    Medium - 29cm
-                                                </li>
-                                                <li data-value="1" className="option">
-                                                    Large - 35cm
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                <form  id="contact-forms" >
+                                   
                                     <div className="form-clt">
                                         <label className="select-crust">Quantity</label>
                                         <div className="quantity-basket">
@@ -157,11 +156,7 @@ const ProductDetails = () => {
                                 </a>
                             </li>
                             
-                            <li className="nav-item">
-                                <a href="#review" data-bs-toggle="tab" className="nav-link">
-                                reviews (4)
-                                </a>
-                            </li>
+                            
                         </ul>
                         <div className="tab-content">
                             <div id="description" className="tab-pane fade show active">
@@ -169,49 +164,11 @@ const ProductDetails = () => {
                                     <div className="row">
                                         <div className="col-lg-12">
                                             <div className="description-content">
-                                                <h3>Experience is over the world visit</h3>
+                                                <h3>{dish.name}</h3>
                                                 <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vulputate vestibulum Phasellus rhoncus, dolor eget viverra pretium, dolor Numquam odit accusantium odit aut commodi et. Nostrum est atque ut dolorum. Et sequi aut atque doloribus qui. Iure amet in voluptate reiciendis. Perspiciatis consequatur aperiam repellendus velit quia est minima. tellus aliquet nunc vitae ultricies erat elit eu lacus. Vestibulum non justo consectetur, cursus ante, tincidunt sapien. Nulla quis diam sit amet turpis interdum accumsan quis necenim. Vivamus faucibus ex sed nibh egestas elementum. Mauris et bibendum dui. Aenean consequat pulvinar luctus
+                                                   {dish.description}
                                                 </p>
-                                                <h3 className="mb-0 mt-5">More Details</h3>
-                                                <div className="description-list-items d-flex">
-                                                    <ul className="description-list">
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span>Lorem Ipsum has been the ‘s standard dummy text. Lorem Ipsumum is simply dummy text.</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span>type here your detail one by one li more add</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span>has been the industry’s standard dummy text ever since. Lorem Ips</span>
-                                                        </li>
-                                                    </ul>
-                                                    <ul className="description-list">
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span>Lorem Ipsum generators on the tend to repeat.</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span> If you are going to use a passage.</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span> Lorem Ipsum generators on the tend to repeat.</span>
-                                                        </li>
-                                                        <li>
-                                                            <i className="fal fa-check"></i>
-                                                            <span> Lorem Ipsum generators on the tend to repeat.</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -355,126 +312,61 @@ const ProductDetails = () => {
                     <h2 className="wow fadeInUp" data-wow-delay=".3s">RELATED PRODUCTS</h2>
                 </div>
                 <div className="row">
-                    <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".3s">
-                        <div className="catagory-product-card-2 text-center">
-                            <div className="icon">
-                                <a href=""><i className="far fa-heart"></i></a>
-                            </div>
-                            <div className="catagory-product-image">
-                                <img src={beefruti} alt="product-img"/>
-                            </div>
-                            <div className="catagory-product-content">
+                {relatedDishes.map((dish) => (
+                <div
+                    key={dish.id}
+                    className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp"
+                    data-wow-delay=".3s"
+                >
+                    <div className="catagory-product-card-2 text-center">
+                        {/* Product Image */}
+                        <div className="catagory-product-image">
+                            <img
+                                src={`${API_BASE_URL}/${dish.image}`} // Use product image from backend data
+                                alt={dish.name}
+                                className="img-fluid"
+                            />
+                        </div>
+                        {/* Product Content */}
+                        <div className="catagory-product-content">
+                            {/* Add to Cart Button */}
+                            <Link to={`/product-details/${dish.id}`}>{dish.name}
                                 <div className="catagory-button">
-                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
+                                    <button className="theme-btn-2">
+                                        <i className="far fa-shopping-basket"></i> Add To Cart
+                                    </button>
                                 </div>
-                                <div className="info-price d-flex align-items-center justify-content-center">
-                                    <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
-                                </div>
-                                <h4>
-                                    <a href="">ruti with beef slice</a>
-                                </h4>
-                                <div className="star">
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star text-white"></span>
-                                </div>
+                            </Link>
+                            {/* Pricing */}
+                            <div className="info-price d-flex align-items-center justify-content-center">
+                                <p>-{dish.offer_percentage}%</p>
+                                <h6>₹{parseFloat(dish.selling_price).toFixed(2)}</h6>
+                                <span style={{ textDecoration: 'line-through',textDecorationColor: 'red'  }}>₹{parseFloat(dish.mrp_price).toFixed(2)}</span>
+                            </div>
+                            {/* Product Name */}
+                            <h4>
+                                <a href="#">{dish.name}</a>
+                            </h4>
+                            {/* Ratings */}
+                            <div className="star">
+                                {Array(5)
+                                    .fill()
+                                    .map((_, index) => (
+                                        <span
+                                            key={index}
+                                            className={`fas fa-star ${
+                                                index < dish.ratings
+                                                    ? ''
+                                                    : 'text-white'
+                                            }`}
+                                        ></span>
+                                    ))}
                             </div>
                         </div>
                     </div>
-                    <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".5s">
-                        <div className="catagory-product-card-2 active text-center">
-                            <div className="icon">
-                                <a href=""><i className="far fa-heart"></i></a>
-                            </div>
-                            <div className="catagory-product-image">
-                                <img src={burger2} alt="product-img"/>
-                            </div>
-                            <div className="catagory-product-content">
-                                <div className="catagory-button">
-                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
-                                </div>
-                                <div className="info-price d-flex align-items-center justify-content-center">
-                                    <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
-                                </div>
-                                <h4>
-                                    <a href="">Whopper Burger King</a>
-                                </h4>
-                                <div className="star">
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star text-white"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".7s">
-                        <div className="catagory-product-card-2 text-center">
-                            <div className="icon">
-                                <a href=""><i className="far fa-heart"></i></a>
-                            </div>
-                            <div className="catagory-product-image">
-                                <img src={pasta2} alt="product-img"/>
-                            </div>
-                            <div className="catagory-product-content">
-                                <div className="catagory-button">
-                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
-                                </div>
-                                <div className="info-price d-flex align-items-center justify-content-center">
-                                    <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
-                                </div>
-                                <h4>
-                                    <a href="">Chiness pasta</a>
-                                </h4>
-                                <div className="star">
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star text-white"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".9s">
-                        <div className="catagory-product-card-2 text-center">
-                            <div className="icon">
-                                <a href=""><i className="far fa-heart"></i></a>
-                            </div>
-                            <div className="catagory-product-image">
-                                <img src={pizza3} alt="product-img"/>
-                            </div>
-                            <div className="catagory-product-content">
-                                <div className="catagory-button">
-                                    <a href="" className="theme-btn-2"><i className="far fa-shopping-basket"></i>Add To Cart</a>
-                                </div>
-                                <div className="info-price d-flex align-items-center justify-content-center">
-                                    <p>-5%</p>
-                                    <h6>$30.52</h6>
-                                    <span>$28.52</span>
-                                </div>
-                                <h4>
-                                    <a href="">delicious burger</a>
-                                </h4>
-                                <div className="star">
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star"></span>
-                                    <span className="fas fa-star text-white"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            ))}
+                    
                 </div>
             </div>
         </section>
