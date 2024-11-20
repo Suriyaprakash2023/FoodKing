@@ -177,18 +177,27 @@ const Header = () => {
                                                     </Link>
                                                   
                                                 </li>
+                                                <li className="has-dropdown">
+                                                    <Link to='/contact'>
+                                                    Contact
+                                                    </Link>
+                                                </li>
                                                
                                                 <li className="has-dropdown">
                                                     <Link to='/about'>
                                                     About
                                                     </Link>
                                                 </li>
+                                                {  isAuthenticated ? (
 
-                                                <li className="has-dropdown">
-                                                    <Link to='/contact'>
-                                                    Contact
-                                                    </Link>
-                                                </li>
+                                                    <li className="has-dropdown">
+                                                        <Link to='/addtocart'>
+                                                        Cart
+                                                        </Link>
+                                                    </li>
+
+                                                ):('')}
+                                                
                                                
                                             </ul>
                                         </nav>

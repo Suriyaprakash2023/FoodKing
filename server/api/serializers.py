@@ -73,3 +73,13 @@ class ItemSerializer(serializers.ModelSerializer):
             'offer_percentage', 'ratings', 'category', 'image','available'
         ]
 
+class CartItemSerializer(serializers.ModelSerializer):
+    dish_name = serializers.CharField(source='dish.name', read_only=True)
+    dish_price = serializers.DecimalField(source='dish.selling_price', max_digits=10, decimal_places=2, read_only=True)
+    dish_image = serializers.ImageField(source='dish.image', read_only=True)
+    # total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'user', 'dish', 'dish_name','dish_image', 'dish_price', 'quantity', 'total_price']
+        

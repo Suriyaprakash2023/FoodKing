@@ -28,12 +28,7 @@ import choose01 from "/src/assets/website/img/choose/01.png";
 import choose02 from "/src/assets/website/img/choose/02.png";
 import choose03 from "/src/assets/website/img/choose/03.png";
 import pizzashape from "/src/assets/website/img/shape/pizzashape.png";
-import instagrambanner from "/src/assets/website/img/instagram-banner/01.jpg";
 import fryshape2 from "/src/assets/website/img/shape/fry-shape-2.png";
-import instagrambanner2 from "/src/assets/website/img/instagram-banner/02.jpg";
-import instagrambanner3 from "/src/assets/website/img/instagram-banner/03.jpg";
-import instagrambanner4 from "/src/assets/website/img/instagram-banner/04.jpg";
-import instagrambanner5 from "/src/assets/website/img/instagram-banner/05.jpg";
 import foodshape from "/src/assets/website/img/shape/food-shape.png";
 import burgerbg from "/src/assets/website/img/banner/burger-bg.png";
 // import burger from "/src/assets/website/img/icon/burger.png"
