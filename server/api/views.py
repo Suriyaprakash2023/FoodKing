@@ -215,39 +215,43 @@ class ShopView(APIView):
         all_dishes = ItemSerializer(all_items,many =True)
         return Response({"categories":categories,"new_arrival":new_arrival.data,"all_dishes":all_dishes.data},status=status.HTTP_200_OK)
 
-from django.core.exceptions import ObjectDoesNotExist    
+from django.core.exceptions import ObjectDoesNotExist  
+from django.shortcuts import get_object_or_404
+
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
         cart = CartItem.objects.filter(user=request.user.id)
-        serializers = CartItemSerializer(cart,many=True)
+        serializers = AddtoCartSerializer(cart,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
+    
     def post(self, request):
         data = request.data
-        dish_id = data.get('dish_id')
-        quantity = data.get('quantity', 1)
+        dish_id = data.get('dish')
+        quantity = int(data.get('quantity', 1))  # Ensure quantity is an integer
 
         try:
-            # Try to get the existing cart item
-            item = CartItem.objects.get(user=request.user, dish_id=dish_id)
-            # If found, update the quantity and total price
+            # Attempt to retrieve the CartItem instance
+            item = CartItem.objects.get(user=request.user, dish=dish_id)
+            # Update the existing cart item
             item.quantity = quantity
-            item.total_price = item.dish.selling_price * int(quantity)
+            item.total_price = item.dish.selling_price * quantity
             item.save()
-            serializer = CartItemSerializer(item)
+            serializer = AddtoCartSerializer(item)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except ObjectDoesNotExist:
-            # If the item does not exist, create a new one
-            data['user'] = request.user.id  # Add user to the data
-            serializer = CartItemSerializer(data=data)
+        except CartItem.DoesNotExist:
+            # If the item does not exist, create a new cart item
+            data['user'] = request.user.id  # Add user ID to the data
+            serializer = AddtoCartSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
     def delete(self, request, cart_item_id):
-        print(cart_item_id,"cart_item_id")
+
         try:
             # Retrieve the cart item belonging to the authenticated user
             cart_item = CartItem.objects.get(id=cart_item_id, user=request.user)
@@ -261,3 +265,45 @@ class CartView(APIView):
                 {"error": "Cart item not found or does not belong to the user."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+        
+class BulkPurchaseView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        
+        serializer = BulkPurchaseSerializer(data=request.data, context={'request': request})
+        
+        if serializer.is_valid():
+
+            order = serializer.save()
+            
+            
+            purchase_data = [
+                {
+                    "item": purchase.item.name,
+                    "quantity": purchase.quantity,
+                    "total_price": purchase.total_price,
+                }
+                for purchase in order.purchases.all()
+            ]
+            return Response(
+                {
+                    "message": "Purchase successful!",
+                    "order_id": order.id,
+                    "total_price": order.total_price,
+                    "purchases": purchase_data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+            # Continue as usual...
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserOrdersView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access this endpoint
+
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)

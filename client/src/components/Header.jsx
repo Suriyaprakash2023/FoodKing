@@ -206,8 +206,30 @@ const Header = () => {
                                 </div>
                             </div>
                             <div className="header-right d-flex justify-content-end align-items-center">
-                                <div className="menu-cart">
-                                   
+                                <div className="menu-cart cart-icon">
+                                
+
+                                <div className="cart-box rounded">
+                                        <ul>
+                                            <li>
+                                                
+                                            <div className="cart-product">
+                                                <i className="fas fa-truck me-2 text-danger"></i>
+                                                    <Link to='/track'>Track Your Order</Link>
+                                                </div>  
+                                            </li>
+                                        </ul>
+                                       
+                                        
+                                        <div className="cart-button d-flex justify-content-between mb-4">
+                                            
+                                           
+                                        </div>
+                                    </div>
+                                    <a  className="cart-icon">
+                                    
+                                    </a>
+
                                     { isAuthenticated ? (
                                         <a  className="d-flex flex-column align-items-center text-center">
 

@@ -8,14 +8,50 @@ import { API_BASE_URL } from "../components/context/data";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+const trackingData = {
+  productName: "Some Jewellery Name",
+  category: "Category",
+  price: "₹ 23,456",
+  steps: [
+    { title: "Order Received", date: "21st November, 2019" },
+    { title: "Order Processed", date: "21st November, 2019" },
+    { title: "Manufacturing In Progress", date: "21st November, 2019" },
+    { title: "Order Dispatched", date: "21st November, 2019" },
+    { title: "Order Delivered", date: "21st November, 2019" },
+  ],
+};
+
 const AddToCart = () => {
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Function to fetch the orders
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/user-orders/`, {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("token")}`, // Add token for authentication
+          },
+        });
+        setOrders(response.data);
+      } catch (err) {
+        setError("Failed to load orders.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   useEffect(() => {
     const cartDishes = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_BASE_URL}/cart/`, {
+        const response = await axios.get(`${API_BASE_URL}/user-orders/`, {
           headers: {
             Authorization: `Token ${token}`,
             "Content-Type": "application/json",
@@ -41,7 +77,8 @@ const AddToCart = () => {
   useEffect(() => {
     // Convert total_price to numbers and calculate subtotal
     const calculatedSubtotal = cart.reduce(
-      (sum, item) => sum + Number(item.total_price), 0
+      (sum, item) => sum + Number(item.total_price),
+      0
     );
     setSubtotal(calculatedSubtotal);
 
@@ -49,12 +86,9 @@ const AddToCart = () => {
     setTotal(calculatedSubtotal + shipping);
   }, [cart]);
 
-
-
-
   const handleRemove = async (id) => {
     const token = localStorage.getItem("token"); // Get the token from local storage or context
-  
+
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you want to delete this item from your cart?",
@@ -64,7 +98,7 @@ const AddToCart = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
-  
+
     if (result.isConfirmed) {
       try {
         // Include token in the Authorization header
@@ -73,7 +107,7 @@ const AddToCart = () => {
             Authorization: `Token ${token}`, // Use the token for authentication
           },
         });
-  
+
         setCart(cart.filter((item) => item.id !== id)); // Update local state
         Swal.fire("Deleted!", "Your item has been removed.", "success");
       } catch (error) {
@@ -82,63 +116,129 @@ const AddToCart = () => {
       }
     }
   };
-  
 
   const handleCheckout = () => {
-
-
-
     // Transform cart data into the desired format
-const formattedCart = cart.map(item => ({
-  id: item.id, // Keep the cart item ID
-  quantity: item.quantity // Keep the quantity
-}));
+    const formattedCart = cart.map((item) => ({
+      id: item.id, // Keep the cart item ID
+      quantity: item.quantity, // Keep the quantity
+    }));
 
-// API payload
-const payload = {
-  cart_items: formattedCart
-};
-
-
+    // API payload
+    const payload = {
+      cart_items: formattedCart,
+    };
 
     Swal.fire({
-      title: 'Are you sure you want to buy?',
+      title: "Are you sure you want to buy?",
       text: "Your cart items will be processed!",
-      imageUrl: 'https://i.pinimg.com/originals/e5/6d/4a/e56d4afe4614e549e07f6995467c57a4.gif', // Example animation or GIF
+      imageUrl:
+        "https://i.pinimg.com/originals/e5/6d/4a/e56d4afe4614e549e07f6995467c57a4.gif", // Example animation or GIF
       imageWidth: 400,
       imageHeight: 200,
       showCancelButton: true,
-      confirmButtonText: 'Confirm',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem("token");
         // Send cart data using Axios
-        axios.post(`${API_BASE_URL}/purchase-cart-items/`, payload,{
-          headers: {
-            'Content-Type': 'application/json',
-            "Authorization" : `Token ${token}`
-          },
-        })
+        axios
+          .post(`${API_BASE_URL}/purchase-cart-items/`, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${token}`,
+            },
+          })
           .then((response) => {
             Swal.fire(
-              'Purchased!',
-              'Your order has been placed successfully.',
-              'success'
+              "Purchased!",
+              "Your order has been placed successfully.",
+              "success"
             );
             // Optionally clear the cart
             setCart([]);
           })
           .catch((error) => {
             Swal.fire(
-              'Error!',
-              'Something went wrong. Please try again later.',
-              'error'
+              "Error!",
+              "Something went wrong. Please try again later.",
+              "error"
             );
           });
       }
     });
+  };
+
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const handleTrackClick = () => {
+    Swal.fire({
+      title: "Order Tracking",
+      html: generateTrackingInfo(trackingData, currentStep),
+      showCloseButton: true,
+      focusConfirm: false,
+      confirmButtonText: "Close",
+      didOpen: () => {
+        startLiveTracking();
+      },
+      willClose: () => {
+        clearInterval(window.liveTrackingInterval);
+      },
+    });
+  };
+
+  const generateTrackingInfo = (data, currentStep) => {
+    return `
+      <div style="text-align: left; font-size: 14px;">
+        <div style="margin-bottom: 10px;">
+          <img src="https://via.placeholder.com/50" alt="product" style="border-radius: 50%;" />
+          <h4 style="margin: 0;">${data.productName}</h4>
+          <p style="margin: 0; color: grey;">${data.category}</p>
+          <h5 style="margin: 0;">${data.price}</h5>
+        </div>
+        <hr />
+        <ul style="list-style: none; padding: 0; font-size: 14px;">
+          ${data.steps
+            .map(
+              (step, index) => `
+                <li style="display: flex; align-items: center; margin: 10px 0;">
+                  <div style="
+                    width: 10px; 
+                    height: 10px; 
+                    ${
+                      index <= currentStep
+                        ? "background-color: orange;"
+                        : "background-color: grey;"
+                    } 
+                    border-radius: 50%; 
+                    margin-right: 10px;
+                  "></div>
+                  <span>${step.title} <br />
+                  <small style="color: grey;">${step.date}</small></span>
+                </li>
+              `
+            )
+            .join("")}
+        </ul>
+      </div>
+    `;
+  };
+
+  const startLiveTracking = () => {
+    let step = 0;
+    window.liveTrackingInterval = setInterval(() => {
+      if (step < trackingData.steps.length) {
+        setCurrentStep(step);
+        Swal.update({
+          html: generateTrackingInfo(trackingData, step),
+        });
+        step++;
+      } else {
+        clearInterval(window.liveTrackingInterval);
+      }
+    }, 2000); // Update every 2 seconds
   };
 
   return (
@@ -151,7 +251,7 @@ const payload = {
       >
         <div className="container">
           <div className="page-heading center">
-            <h1>shop Cart</h1>
+            <h1>Order Track</h1>
             <ul className="breadcrumb-items">
               <li>
                 <Link to="/">Home</Link>
@@ -159,7 +259,7 @@ const payload = {
               <li>
                 <i className="far fa-chevron-right"></i>
               </li>
-              <li>shop Cart</li>
+              <li>Order Track</li>
             </ul>
           </div>
         </div>
@@ -178,87 +278,53 @@ const payload = {
                         <tr>
                           <th>S.No</th>
                           <th>Product</th>
-                          <th>Price</th>
+
                           <th>Quantity</th>
                           <th>Total</th>
-                        
+                          <th>Track</th>
+
                           <th>Remove</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {cart.length > 0 ? (
-                          cart.map((item, index) => (
-                            <tr className="cart-item" key={item.id}>
-                              <td>{index + 1}</td>
-                              <td className="cart-item-info mt-3">
-                                <img
-                                  src={`${API_BASE_URL}/${item.dish_image}`}
-                                  alt={item.dish_name}
-                                  style={{ width: "50px", height: "50px" }}
-                                />
-                                <span>{item.dish_name}</span>
-                              </td>
-                              <td className="cart-item-price fw-bold">
-                                ₹ {item.dish_price}
-                              </td>
-                              <td className="">
-                                <span className="cart-item-quantity-amount">
-                                  {item.quantity}
-                                </span>
-                              </td>
-                              <td className="cart-item-price fw-bold">₹ {item.total_price}</td>
-                              <td className="cart-item-remove">
-                                <a
-                                  href="#0"
-                                  onClick={() => handleRemove(item.id)}
-                                >
-                                  <i className="fas fa-trash-alt text-danger"></i>
-                                </a>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="6" style={{ textAlign: "center" }}>
-                              Your cart is empty.
-                            </td>
-                          </tr>
-                        )}
+                      {orders.length > 0 ? (
+          orders.map((order, index) => (
+            <tr key={order.id}>
+              <td>{index + 1}</td>
+              <td>{order.id}</td>
+              <td>₹ {order.total_price}</td>
+              <td>{order.status}</td>
+              <td>{new Date(order.created_at).toLocaleString()}</td>
+              <td>
+                {order.purchases.length > 0 ? (
+                  <ul>
+                    {order.purchases.map((purchase, idx) => (
+                      <li key={idx}>
+                        <strong>Item ID:</strong> {purchase.item}, 
+                        <strong> Quantity:</strong> {purchase.quantity}, 
+                        <strong> Price:</strong> ₹ {purchase.total_price}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span>No purchases</span>
+                )}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="6" style={{ textAlign: "center" }}>
+              No orders found.
+            </td>
+          </tr>
+        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
-            {cart.length > 0 ? (
-            <div className="row">
-              <div className="col-lg-6"></div>
-              <div className="col-xl-6">
-                <div className="cart-pragh-box">
-                  <div className="cart-graph">
-                    <h4>Cart Total</h4>
-                    <ul>
-                      <li>
-                        <span>Subtotal</span>
-                        <span>₹{Number(subtotal).toFixed(2)}</span> {/* Ensure subtotal is a number */}
-                      </li>
-                      <li>
-                        <span>Shipping</span>
-                        <span>₹{shipping}</span>
-                      </li>
-                      <li>
-                        <span>Total</span>
-                        <span>₹{Number(total).toFixed(2)}</span> {/* Ensure total is a number */}
-                      </li>
-                    </ul>
-                    <div className="chck">
-                      <a className="theme-btn border-radius-none"  onClick={handleCheckout}>Checkout</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            ):('')}
           </div>
         </div>
       </section>

@@ -83,3 +83,81 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ['id', 'user', 'dish', 'dish_name','dish_image', 'dish_price', 'quantity', 'total_price']
         
+
+class AddtoCartSerializer(serializers.ModelSerializer):
+    dish_name = serializers.CharField(source='dish.name', read_only=True)
+    dish_price = serializers.DecimalField(source='dish.selling_price', max_digits=10, decimal_places=2, read_only=True)
+    dish_image = serializers.ImageField(source='dish.image', read_only=True)
+    # total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'user', 'dish', 'dish_name','dish_image', 'dish_price', 'quantity', 'total_price']
+
+
+
+class CartItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    quantity = serializers.IntegerField(required=True, min_value=1)
+
+
+class BulkPurchaseSerializer(serializers.Serializer):
+    cart_items = serializers.ListField(
+        child=CartItemSerializer(),  # Nested serializer to validate each cart item
+        error_messages={'required': 'Cart items are required for bulk purchase.'}
+    )
+
+    def validate_cart_items(self, value):
+        if not value:
+            raise serializers.ValidationError("No cart items provided for purchase.")
+        return value
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+     
+        order = Order.objects.create(user=user)
+        purchases = []
+        
+        for cart_item_data in validated_data['cart_items']:
+
+            print(cart_item_data['id'],"cart_item_data['id']")
+            # Fetch the CartItem
+            cart_item = CartItem.objects.filter(id=cart_item_data['id'], user=user).first()
+         
+            if not cart_item:
+                raise serializers.ValidationError(
+                    f"Cart item with ID {cart_item_data['id']} not found or doesn't belong to the user."
+                )
+            
+ 
+            
+            # Create purchase entry
+            purchase = ItemPurchase.objects.create(
+                user = user,
+                order=order,
+                item=cart_item.dish,
+                quantity=cart_item_data['quantity'],
+                total_price=cart_item.dish.selling_price * cart_item_data['quantity'],
+            )
+            purchases.append(purchase)
+
+            # Optionally delete cart items after purchase
+            cart_item.delete()
+
+        # Update order total price
+        order.update_total_price()
+
+        return order
+
+
+class ItemPurchaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemPurchase
+        fields = ['item', 'quantity', 'total_price', 'purchased_at']
+
+class OrderSerializer(serializers.ModelSerializer):
+    purchases = ItemPurchaseSerializer(many=True, read_only=True)  # Include related ItemPurchase objects
+
+    class Meta:
+        model = Order
+        fields = ['id', 'total_price', 'status', 'created_at', 'purchases']

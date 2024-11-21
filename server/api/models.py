@@ -131,39 +131,40 @@ class CartItem(models.Model):
     
 
 
+
 class Order(models.Model):
-    STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Preparing', 'Preparing'),
-        ('On the Way', 'On the Way'),
-        ('Delivered', 'Delivered'),
-        ('Canceled', 'Canceled'),
-    ]
-
-    customer = models.ForeignKey(CustomUser, related_name="orders", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-
-    def __str__(self):
-        return f"Order {self.id} - {self.customer.user.username}"
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders',blank=True, null=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Completed', 'Completed')], default='Pending',blank=True, null=True)
 
     def update_total_price(self):
-        # Recalculate total price based on OrderItems
-        total = sum(item.get_total_price() for item in self.items.all())
-        self.total_price = total
+        # Calculate the total price based on associated ItemPurchase objects
+        self.total_price = sum(item.total_price for item in self.purchases.all())
         self.save()
 
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username} - {self.status}"
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+
+
+class ItemPurchase(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='purchases' ,blank=True, null=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='purchases',blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='purchases',blank=True, null=True)  # Add this field
+    quantity = models.PositiveIntegerField(default=1,blank=True, null=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
+    purchased_at = models.DateTimeField(auto_now=True,blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.quantity * self.item.selling_price
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.quantity} x {self.item.name}"
+        return f"{self.user.username} purchased {self.quantity} x {self.item.name}"
 
-    def get_total_price(self):
-        return self.quantity * self.item.price
+
+
+
+
 

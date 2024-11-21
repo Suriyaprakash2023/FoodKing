@@ -16,6 +16,7 @@ import DishDetails from './components/Dashboard/DishDetails';
 import Payments from './components/Dashboard/Payments'
 import AddDish from './components/Dashboard/AddDish';
 import AddToCart from './components/AddToCart';
+import OrderTrack from './components/OrderTrack';
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route path='/payments' element={<Payments/>} />
             <Route path='/add-dish' element={<AddDish/>} />
             <Route path='/addtocart' element={<AddToCart/>} />
+            <Route path='/track' element={<OrderTrack/>} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
