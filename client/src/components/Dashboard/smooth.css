@@ -1,0 +1,12 @@
+.purchases-list {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.purchases-list.collapsed {
+  max-height: 80px; /* Adjust based on the height of one purchase item */
+}
+
+.purchases-list.expanded {
+  max-height: 1000px; /* Large enough to fit all items */
+}

@@ -193,7 +193,13 @@ class NewDishes(APIView):
         items = Item.objects.all().order_by('-id')[:8]
         serializer = ItemSerializer(items,many =True)
         return Response(serializer.data,status=status.HTTP_200_OK)
-    
+
+class NewOrders(APIView):
+    def get(self,request):
+        orders = Order.objects.all().order_by('-id')[:8]
+        serializer = OrderSerializer(orders,many =True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        
     
 class CategoryDishesView(APIView):
     def get(self,request,category):
@@ -307,3 +313,64 @@ class UserOrdersView(APIView):
         orders = Order.objects.filter(user=request.user).order_by('-created_at')
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
+    
+    def patch(self, request, oredr_id):
+
+        try:
+            # Retrieve the cart item belonging to the authenticated user
+            orders = Order.objects.get(id=oredr_id, user=request.user)
+            orders.status = 'Canceled'
+            orders.save()
+            return Response(
+                {"message": "Order item deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        except CartItem.DoesNotExist:
+            return Response(
+                {"error": "Cart item not found or does not belong to the user."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
+from django.db.models import Count
+class OrdersView(APIView):
+    def get(self, request):
+        # Count orders by status
+        status_counts = (
+            Order.objects.values('status')
+            .annotate(count=Count('status'))
+            .order_by('status')
+        )
+        status_counts_dict = {item['status']: item['count'] for item in status_counts}
+
+        # Get the last 8 orders
+        last_8_orders = Order.objects.all().order_by('-created_at')[:8]
+        last_8_orders_data = OrderSerializer(last_8_orders, many=True).data
+
+        # Combine the response
+        response_data = {
+            "status_counts": status_counts_dict,
+            "last_8_orders": last_8_orders_data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+    def post(self,request,unique_id):
+        order = Order.objects.get(unique_id=unique_id)
+        serializers = AdminOrderSerializer(order)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+    def patch(self,request,unique_id):
+        print(request.data['status'],unique_id,"data")
+        order = Order.objects.get(unique_id=unique_id)
+        order.status = request.data['status']
+        order.save()
+        return Response( status=status.HTTP_200_OK)
+    
+class OrderStatusView(APIView):
+    def post(self,request,category):
+        # print(request.data,"status")
+        # status = request.data['category']
+        print(category)
+        order = Order.objects.filter(status=category)
+        serializers = OrderSerializer(order,many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)

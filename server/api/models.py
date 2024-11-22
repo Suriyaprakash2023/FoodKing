@@ -136,15 +136,22 @@ class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders',blank=True, null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
-    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Completed', 'Completed')], default='Pending',blank=True, null=True)
-
+    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'),('Shipped', 'Shipped'), ('Delivered', 'Delivered'), ('Canceled', 'Canceled')], default='Pending',blank=True, null=True)
+    unique_id = AlphaNumericFieldfive(unique=True, editable=False,null=True, blank=False)
     def update_total_price(self):
         # Calculate the total price based on associated ItemPurchase objects
         self.total_price = sum(item.total_price for item in self.purchases.all())
         self.save()
 
+    def save(self, *args, **kwargs):
+        if not self.unique_id:
+            self.unique_id = AlphaNumericFieldfive.generate_alphanumeric()
+            while Order.objects.filter(unique_id=self.unique_id).exists():
+                self.unique_id = AlphaNumericFieldfive.generate_alphanumeric()
+        super(Order, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f"Order {self.id} by {self.user.username} - {self.status}"
+        return str(self.unique_id)
 
 
 

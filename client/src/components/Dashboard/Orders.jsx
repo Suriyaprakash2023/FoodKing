@@ -4,8 +4,196 @@ import DashboardFooter from "./DashboardFooter";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../context/data";
+import "./smooth.css";
+import Swal from "sweetalert2";
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [orderCategory, setOrderCategory] = useState([]);
+  const [newOrders, setNewOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [refresh, setRefresh] = useState(false); // State to trigger re-fetching
+  console.log(orders, "response.orders");
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_BASE_URL}/orders/`);
+
+        setOrders(response.data.last_8_orders);
+        setOrderCategory(response.data.status_counts);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dishes:", error);
+        setError(true);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setExpanded(!expanded);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 8;
+
+  // Calculate the orders for the current page
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+
+  const handleStatusChange = async (unique_id) => {
+    const { value: status } = await Swal.fire({
+      title: "Change Order Status",
+      text: "Select a new status for this order.",
+      input: "select",
+      inputOptions: {
+        Pending: "Pending",
+        Shipped: "Shipped",
+        Delivered: "Delivered",
+        Canceled: "Canceled"
+      },
+      inputPlaceholder: "Select status",
+      showCancelButton: true,
+      confirmButtonText: "Change Status",
+      cancelButtonText: "Cancel",
+      imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp", // Status change GIF
+      imageWidth: 300,
+      imageHeight: 350,
+      inputValidator: (value) => {
+        if (!value) {
+          return "Please select a status!";
+        }
+      },
+    });
+
+    if (status) {
+      // Confirmed status change
+      Swal.fire({
+        title: "Are you sure?",
+        text: `Do you want to change the order status to "${status}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, change it!",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .patch(`${API_BASE_URL}/orders/${unique_id}/`, { status })
+            .then(() => {
+              setRefresh(!refresh); // Trigger re-fetching of orders
+              Swal.fire(
+                "Updated!",
+                `Order status has been changed to "${status}".`,
+                "success"
+              );
+            })
+            .catch(() => {
+              Swal.fire(
+                "Error!",
+                "There was an issue changing the order status.",
+                "error"
+              );
+            });
+        }
+      });
+    }
+  };
+
+  const handleCancelOrder = (unique_id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to cancel this order?",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "No, keep it",
+      imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/cancel-order-illustration-download-in-svg-png-gif-file-formats--cancelled-refusal-rejected-online-shopping-pack-e-commerce-illustrations-6506585.png", // Cancel GIF
+      imageWidth: 400,
+      imageHeight: 300,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(`${API_BASE_URL}/orders/${unique_id}/`, { status: "Canceled" })
+          .then(() => {
+            setRefresh(!refresh); // Trigger re-fetching of orders
+            Swal.fire(
+              "Cancelled!",
+              "The order has been successfully cancelled.",
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire(
+              "Error!",
+              "There was an issue cancelling the order.",
+              "error"
+            );
+          });
+      }
+    });
+  };
+
+  const handleCategoryClick = async (category) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_BASE_URL}/orders-status/${category}/`);
+      setOrders(response.data); // Assuming the API returns filtered orders
+      setLoading(false);
+    } catch (error) {
+      console.error(`Error fetching ${category} orders:`, error);
+      setError(true);
+      setLoading(false);
+    }
+  };
+  
+  // useEffect(() => {
+  //   const fetchNewOrders = async () => {
+  //     if (!orderCategory) return; // Do nothing if no category is selected
+
+  //     try {
+  //       setLoading(true);
+  //       const response = await axios.get(
+  //         `${API_BASE_URL}/orders/${orderCategory}/`
+  //       );
+  //       if (response.status === 200) {
+  //         setNewOrders(response.data);
+  //         setOrderCategory(`${orderCategory} Orders`);
+  //       } else {
+  //         console.log("Failed to fetch new Orders.");
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching category Orders:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchNewOrders();
+  // }, [orderCategory]);
+
   return (
     <>
       <DashboardSideNav />
@@ -32,28 +220,38 @@ const Orders = () => {
                   <div className="iq-col-masonry m-0">
                     <button
                       type="button"
-                      className="btn btn-outline-danger rounded iq-col-masonry-block"
+                      className="btn btn-outline-info  rounded iq-col-masonry-block"
+                      onClick={() => handleCategoryClick("Pending")}
                     >
                       <SentimentVeryDissatisfiedIcon className="me-1" />
-                      Un Shipped Orders
+                      Pendding Orders ({orderCategory.Pending || 0})
                     </button>
 
                     <button
                       type="button"
                       className="btn btn-outline-warning rounded iq-col-masonry-block"
+                      onClick={() => handleCategoryClick("Shipped")}
                     >
                       <LocalShippingIcon className="me-1" />
-                      Shipped Orders
+                      Shipped Orders ({orderCategory.Shipped || 0})
                     </button>
 
                     <button
                       type="button"
                       className="btn btn-outline-success rounded iq-col-masonry-block"
+                      onClick={() => handleCategoryClick("Delivered")}
                     >
                       <VerifiedIcon className="me-1" />
-                      Delivary Orders
+                      Delivered Orders ({orderCategory.Delivered || 0})
                     </button>
-
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger rounded iq-col-masonry-block"
+                      onClick={() => handleCategoryClick("Canceled")}
+                    >
+                      <DeleteForeverIcon className="me-1" />
+                      Canceled Orders ({orderCategory.Canceled || 0})
+                    </button>
                     <input
                       type="search"
                       className="form-control"
@@ -65,68 +263,108 @@ const Orders = () => {
             </div>
           </div>
           <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4">
-            <div className="col">
-              <Link to="/order-details">
-                <div className="card order-history-card">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between mb-5">
-                      <div className="">
-                        <h6 className="heading-title mb-2">Order #309</h6>
-                        <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                      </div>
-                      <img
-                        src="/src/assets/dashboard/images/order-history/01.png"
-                        className="img-fluid rounded-pill avatar-50"
-                        alt=""
-                      />
-                    </div>
-                    <div className="d-flex">
-                      <img
-                        src="/src/assets/dashboard/images/order-history/09.png"
-                        className="img-fluid rounded-pill avatar-60"
-                        alt=""
-                      />
-                      <div className="ms-4 order-history">
-                        <h6 className="mb-2 heading-title fw-bolder">
-                          Vegetable Mixups
-                        </h6>
-                        <p>Vegetable Fritters with Egg</p>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h6 className="heading-title fw-bolder">$05.30</h6>
-                          <h6 className="heading-title fw-bolder">Qty : 1</h6>
+            {orders.map((order, index) => (
+              <div className="col" key={index}>
+                  <div className="card order-history-card">
+                    <div className="card-body">
+                      {/* Order Header */}
+                      <div className="d-flex align-items-center justify-content-between mb-5">
+                        <div>
+                          <Link to={`/order-detail/${order.unique_id}/`}>
+                          <h6 className="heading-title mb-2 text-success fw-bold">
+                            Order #{order.unique_id}
+                          </h6>
+                          </Link>
+                          <p className="mb-0">
+                            {new Date(order.created_at).toLocaleString()}
+                          </p>
                         </div>
-                        <hr className="my-4" />
+                        <img
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
+                          className="img-fluid rounded-pill avatar-50"
+                          alt="Dish"
+                        />
                       </div>
-                    </div>
-                    <div className="d-flex">
-                      <img
-                        src="/src/assets/dashboard/images/order-history/10.png"
-                        className="img-fluid rounded-pill avatar-60"
-                        alt=""
-                      />
-                      <div className="ms-4">
-                        <h6 className="mb-2 heading-title fw-bolder">Burger</h6>
-                        <p>Vegetable Fritters with Egg</p>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h6 className="heading-title fw-bolder">05.30</h6>
-                          <h6 className="heading-title fw-bolder">Qty : 1</h6>
+
+                      {/* Purchases */}
+                      <div
+                        className={`purchases-list ${
+                          expanded ? "expanded" : "collapsed"
+                        }`}
+                      >
+                        {order.purchases.map((purchase, i) => (
+                          <div className="d-flex mb-4" key={i}>
+                            <img
+                              src={`${API_BASE_URL}/${purchase.dish_image}`}
+                              className="img-fluid rounded-pill avatar-60"
+                              alt={purchase.dish_name}
+                            />
+                            <div className="ms-4 order-history">
+                              <h6 className="mb-2 heading-title fw-bolder">
+                                {purchase.dish_name}
+                              </h6>
+
+                              <div className="d-flex justify-content-between align-items-center">
+                                <h6 className="heading-title fw-bolder">
+                                  ₹ {purchase.total_price}
+                                </h6>
+                                <h6 className="heading-title fw-bolder">
+                                  Qty: {purchase.quantity}
+                                </h6>
+                              </div>
+                              {i !== order.purchases.length - 1 && (
+                                <hr className="my-4" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* View More Button */}
+                      {order.purchases.length > 1 && (
+                        <div className="text-center mt-3">
+                          <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleExpand();
+                            }}
+                          >
+                            {expanded ? "View Less" : "View More"}
+                          </button>
                         </div>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="">
-                        <p className="mb-0">X2 items</p>
-                        <h6 className="heading-title fw-bolder">$20.60</h6>
-                      </div>
-                      <div className="d-flex align-items-center" id="action-01">
-                        <button
-                          className="btn btn-icon btn-outline-success rounded ctc-button"
-                          data-action="click"
-                          data-closest="#action-01"
-                          data-status="complete"
+                      )}
+
+                      {/* Footer */}
+                      <hr />
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                          <p className="mb-0">
+                            X{order.purchases.length} items
+                          </p>
+                          <h6 className="heading-title fw-bolder">
+                            ₹ {order.total_price}
+                          </h6>
+                        </div>
+                        <div
+                          className="d-flex align-items-center"
+                         
                         >
-                          <span className="btn-inner d-flex align-items-center">
+                          {order.status === "Delivered" ? (
+                            // If status is "Delivered", show only the "Completed" button
+                            <button className="btn btn-icon btn-success rounded" onClick={() => handleStatusChange(order.unique_id)} >
+                              <span className="btn-inner d-flex align-items-center">
+                                Delivered
+                              </span>
+                            </button>
+                          ) : (
+                            // If status is not "Delivered", show both "Completed" and "Rejected" buttons
+                            <>
+                               <button
+                                className="btn btn-icon btn-outline-success rounded ctc-button"
+                                onClick={() => handleStatusChange(order.unique_id)}
+                              >
+                               <span className="btn-inner d-flex align-items-center">
                             <span>
                               <svg
                                 width="12"
@@ -143,903 +381,104 @@ const Orders = () => {
                                 />
                               </svg>
                             </span>
-                            <span className="status pe-2">Completed</span>
-                          </span>
-                        </button>
-                        <button
-                          className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                          data-action="click"
-                          data-closest="#action-01"
-                          data-status="reject"
-                        >
-                          <span className="btn-inner d-flex align-items-center">
-                            <span>
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.6654 5.33496L5.33203 10.6683"
-                                  stroke="currentColor"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M10.6643 10.6663L5.33203 5.33301"
-                                  stroke="currentColor"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
                             </span>
-                            <span className="status pe-2">Rejected</span>
-                          </span>
-                        </button>
+                              </button>
+                              <button
+                                className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
+                                onClick={() => handleCancelOrder(order.unique_id)}
+                              >
+                                <span className="btn-inner d-flex align-items-center">
+                                  <span>
+                                    <svg
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M10.6654 5.33496L5.33203 10.6683"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                      <path
+                                        d="M10.6643 10.6663L5.33203 5.33301"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </span>
+                                 
+                                </span>
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/02.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/11.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">Pasta</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$15.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/11.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Mexican Burger
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$45.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$50.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-02">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-02"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-02"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/03.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/09.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Vegetable Mixups
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$05.70</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/10.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Mexican Burger
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$75.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$60.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-03">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-03"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-03"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/04.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/12.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">Noodles</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$75.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/13.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">Pizza</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$55.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$40.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-04">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-04"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-04"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/05.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/15.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Veg Crispy
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$45.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/16.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">Salad</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$15.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$20.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-05">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-05"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-05"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/06.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/17.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Mix Veggie Pizza
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$55.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/18.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">Veg Soup</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$55.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$10.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-06">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-06"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-06"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/07.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/19.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Chilly Garlic
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$45.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/20.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Paneer Pizza
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$55.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$10.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-07">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-07"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-07"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
-            <div className="col">
-              <div className="card order-history-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center justify-content-between mb-5">
-                    <div className="">
-                      <h6 className="heading-title mb-2">Order #309</h6>
-                      <p className="mb-0">23 Feb 2021, 08:28 PM</p>
-                    </div>
-                    <img
-                      src="/src/assets/dashboard/images/order-history/08.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt=""
-                    />
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/21.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4 order-history">
-                      <h6 className="mb-2 heading-title fw-bolder">
-                        Spring Roll
-                      </h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$05.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                      <hr className="my-4" />
-                    </div>
-                  </div>
-                  <div className="d-flex">
-                    <img
-                      src="/src/assets/dashboard/images/order-history/22.png"
-                      className="img-fluid rounded-pill avatar-60"
-                      alt=""
-                    />
-                    <div className="ms-4">
-                      <h6 className="mb-2 heading-title fw-bolder">Nachos</h6>
-                      <p>Vegetable Fritters with Egg</p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h6 className="heading-title fw-bolder">$05.30</h6>
-                        <h6 className="heading-title fw-bolder">Qty : 1</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="">
-                      <p className="mb-0">X2 items</p>
-                      <h6 className="heading-title fw-bolder">$10.60</h6>
-                    </div>
-                    <div className="d-flex align-items-center" id="action-08">
-                      <button
-                        className="btn btn-icon btn-outline-success rounded ctc-button"
-                        data-action="click"
-                        data-closest="#action-08"
-                        data-status="complete"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="12"
-                              height="8"
-                              viewBox="0 0 12 8"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M0.667969 4.09434L3.93567 7.33366L10.668 0.666992"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Completed</span>
-                        </span>
-                      </button>
-                      <button
-                        className="btn btn-icon btn-outline-danger rounded ctc-button ms-3"
-                        data-action="click"
-                        data-closest="#action-08"
-                        data-status="reject"
-                      >
-                        <span className="btn-inner d-flex align-items-center">
-                          <span>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.6654 5.33496L5.33203 10.6683"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M10.6643 10.6663L5.33203 5.33301"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                          <span className="status pe-2">Rejected</span>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
+                
+              </div>
+            ))}
           </div>
           <div className="row mb-4 text-center">
             <div className="col-12">
-              <a href="#" className="btn btn-primary rounded">
-                Load More
+              <a href="#" className="btn btn-white rounded">
+                {/* Pagination */}
+                <ul className="pagination justify-content-center mt-4">
+                  {/* Previous Button */}
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                    onClick={() =>
+                      currentPage > 1 && handlePageChange(currentPage - 1)
+                    }
+                  >
+                    <span className="page-link">Previous</span>
+                  </li>
+
+                  {/* Page Numbers */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                        onClick={() => handlePageChange(page)}
+                      >
+                        <span className="page-link">{page}</span>
+                      </li>
+                    )
+                  )}
+
+                  {/* Next Button */}
+                  <li
+                    className={`page-item ${
+                      currentPage === totalPages ? "disabled" : ""
+                    }`}
+                    onClick={() =>
+                      currentPage < totalPages &&
+                      handlePageChange(currentPage + 1)
+                    }
+                  >
+                    <span className="page-link">Next</span>
+                  </li>
+                </ul>
               </a>
             </div>
           </div>
-          
         </div>
 
         {/* <!-- Footer Section Start */}
         <DashboardFooter />
         {/* <!-- Footer Section End   */}
-
-
-       
       </main>
-      
     </>
   );
 };

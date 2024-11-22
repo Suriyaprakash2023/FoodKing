@@ -7,6 +7,24 @@ import { Link } from "react-router-dom";
 import { API_BASE_URL } from "../components/context/data";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Button from '@mui/material/Button';
+import { green, red, orange, blue } from "@mui/material/colors";
+
+
+const getStatusColor = (status) => {
+  switch (status.toLowerCase()) {
+    case "delivered":
+      return green[500]; // Success color
+    case "canceled":
+      return red[500]; // Danger color
+    case "shipped":
+      return orange[500]; // Warning color
+    case "pending":
+    default:
+      return blue[500]; // Secondary color
+  }
+};
+
 
 const trackingData = {
   productName: "Some Jewellery Name",
@@ -27,6 +45,7 @@ const AddToCart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log(orders,"orders")
   useEffect(() => {
     // Function to fetch the orders
     const fetchOrders = async () => {
@@ -47,44 +66,12 @@ const AddToCart = () => {
     fetchOrders();
   }, []);
 
-  useEffect(() => {
-    const cartDishes = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_BASE_URL}/user-orders/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 200) {
-          console.log(response.data, "response.data");
-          setCart(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching dishes:", error);
-      }
-    };
-
-    cartDishes();
-  }, []);
 
   const [subtotal, setSubtotal] = useState(0); // Ensure this is a number
   const shipping = 50; // Fixed shipping cost
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    // Convert total_price to numbers and calculate subtotal
-    const calculatedSubtotal = cart.reduce(
-      (sum, item) => sum + Number(item.total_price),
-      0
-    );
-    setSubtotal(calculatedSubtotal);
 
-    // Calculate total
-    setTotal(calculatedSubtotal + shipping);
-  }, [cart]);
 
   const handleRemove = async (id) => {
     const token = localStorage.getItem("token"); // Get the token from local storage or context
@@ -102,7 +89,7 @@ const AddToCart = () => {
     if (result.isConfirmed) {
       try {
         // Include token in the Authorization header
-        await axios.delete(`${API_BASE_URL}/cart/${id}/`, {
+        await axios.patch(`${API_BASE_URL}/user-orders/${id}/`, {
           headers: {
             Authorization: `Token ${token}`, // Use the token for authentication
           },
@@ -276,49 +263,88 @@ const AddToCart = () => {
                     <table>
                       <thead>
                         <tr>
-                          <th>S.No</th>
-                          <th>Product</th>
+                          <th>Order Id</th>
+                          <th>Dishes</th>
 
                           <th>Quantity</th>
                           <th>Total</th>
+                          <th>Status</th>
                           <th>Track</th>
 
-                          <th>Remove</th>
+                          <th>Cancle</th>
                         </tr>
                       </thead>
                       <tbody>
                       {orders.length > 0 ? (
-          orders.map((order, index) => (
-            <tr key={order.id}>
-              <td>{index + 1}</td>
-              <td>{order.id}</td>
-              <td>₹ {order.total_price}</td>
-              <td>{order.status}</td>
-              <td>{new Date(order.created_at).toLocaleString()}</td>
-              <td>
-                {order.purchases.length > 0 ? (
-                  <ul>
-                    {order.purchases.map((purchase, idx) => (
-                      <li key={idx}>
-                        <strong>Item ID:</strong> {purchase.item}, 
-                        <strong> Quantity:</strong> {purchase.quantity}, 
-                        <strong> Price:</strong> ₹ {purchase.total_price}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span>No purchases</span>
-                )}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="6" style={{ textAlign: "center" }}>
-              No orders found.
-            </td>
-          </tr>
-        )}
+                          orders.map((order) => (
+                            <tr className="cart-item" key={order.unique_id}>
+                              <td className="fw-bold text-success"># {order.unique_id}</td>
+                              <td className="cart-item-info mt-3">
+                                {order.purchases.map((purchase, idx) => (
+                                  <div key={idx} style={{ marginBottom: "10px", textAlign: "center" }}>
+                                    <img
+                                      src={`${API_BASE_URL}${purchase.dish_image}`}
+                                      alt={purchase.dish_name}
+                                      style={{ width: "50px", height: "50px", display: "block", margin: "0 auto" }}
+                                    />
+                                    <span style={{ display: "block", marginTop: "5px" }}>{purchase.dish_name}</span>
+                                  </div>
+                                ))}
+                              </td>
+
+                              {/* Display Quantities Side by Side */}
+                              <td className="">
+                                <span style={{ display: "block", margin: "0 auto", textAlign: "center" }}>
+                                  {order.purchases.map((purchase) => purchase.quantity).join(" + ")}
+                                </span>
+                              </td>
+
+                              <td className="cart-item-price fw-bold">₹ {order.total_price}</td>
+
+                              <td className="cart-item-remove">
+                              <Button
+                                  variant="contained"
+                                  size="small"
+                                  style={{
+                                    backgroundColor: getStatusColor(order.status),
+                                    color: "#fff",
+                                  }}
+                                >
+                                  <span className={`status-label ${order.status.toLowerCase()}`}>
+                                    {order.status}
+                                  </span>
+                                </Button>
+                                                      
+                              </td>
+
+                              <td className="cart-item-price fw-bold">
+                              <Button  variant="contained" size="small" onClick={handleCheckout} style={{ backgroundColor: green[500], color: '#fff' }}>
+                              Track
+                                </Button>
+                              
+                              </td>
+
+                              <td className="cart-item-remove">
+                                <a
+                                  href="#0"
+                                  onClick={() => handleRemove(order.id)}
+                                >
+                                  <i className="fas fa-trash-alt text-danger"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="6" style={{ textAlign: "center" }}>
+                              You have no orders.
+                            </td>
+                          </tr>
+                        )}
+
+
+
+
                       </tbody>
                     </table>
                   </div>

@@ -151,13 +151,28 @@ class BulkPurchaseSerializer(serializers.Serializer):
 
 
 class ItemPurchaseSerializer(serializers.ModelSerializer):
+    dish_name = serializers.CharField(source='item.name', read_only=True)  # Dish name from the related Item model
+    dish_image = serializers.ImageField(source='item.image', read_only=True)  # Dish image from the related Item model
+    dish_category = serializers.CharField(source='item.category', read_only=True)  # Dish image from the related Item model
+    dish_ratings = serializers.IntegerField(source='item.ratings', read_only=True)  # Dish ratings from related Item model
+
     class Meta:
         model = ItemPurchase
-        fields = ['item', 'quantity', 'total_price', 'purchased_at']
+        fields = ['dish_name','dish_category','dish_ratings', 'dish_image', 'quantity', 'total_price']
+        depth = 1
+
 
 class OrderSerializer(serializers.ModelSerializer):
     purchases = ItemPurchaseSerializer(many=True, read_only=True)  # Include related ItemPurchase objects
 
     class Meta:
         model = Order
-        fields = ['id', 'total_price', 'status', 'created_at', 'purchases']
+        fields = ['unique_id', 'total_price', 'status', 'created_at', 'purchases']
+
+
+class AdminOrderSerializer(serializers.ModelSerializer):
+    purchases = ItemPurchaseSerializer(many=True, read_only=True)  # Include related ItemPurchase objects
+    user =UserSerializer(read_only=True)
+    class Meta:
+        model = Order
+        fields = ['unique_id', 'total_price','user', 'status', 'created_at', 'purchases']

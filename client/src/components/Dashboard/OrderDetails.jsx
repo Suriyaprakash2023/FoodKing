@@ -1,7 +1,159 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import DashboardSideNav from "../Dashboard/DashboardSideNav";
 import DashboardHeader from "../Dashboard/DashboardHeader";
+import {Link,useParams,useNavigate,useLocation } from "react-router-dom";
+import {API_BASE_URL} from '../context/data';
+import axios from "axios";
+import Swal from "sweetalert2";
+
 const OrderDetails = () => {
+  const [order, setOrder] = useState(null); // Initialize state as `null`
+  const [user,setUser] = useState(null)
+  const [loading, setLoading] = useState(true); // Track loading state
+  const { id } = useParams(); // Extract `id` from the URL
+  const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false); // State to trigger re-fetching
+    // Fetch the dish details
+  
+    // useEffect hook to call dishDetail on component mount or when id/token changes
+    useEffect(() => {
+      const orderDetail = async () => {
+        try {
+          if (!id) {
+            console.error("No ID provided");
+            return;
+          }
+    
+          console.log(`Fetching order details for ID: ${id}`);
+          const response = await axios.post(
+            `${API_BASE_URL}/order-detail/${id}/`
+            // Uncomment and add headers if needed
+            // , { headers: { Authorization: `Bearer ${yourAuthToken}` } }
+          );
+    
+          if (response.status === 200) {
+            console.log(response.data, "response.data");
+            setOrder(response.data);
+            setUser(response.data.user);
+          } else {
+            console.warn("Failed to fetch order details:", response.status);
+          }
+        } catch (error) {
+          console.error("Error fetching order details:", error.response || error);
+        }finally {
+          setLoading(false); // Stop loading
+        }
+      };
+    
+      orderDetail();
+    }, [id]);
+    
+// Render loading state or error placeholder
+if (loading) {
+  return <p>Loading order details...</p>;
+}
+
+if (!order || !user) {
+  return <p>Error: Unable to fetch order details.</p>;
+}
+
+
+
+const handleStatusChange = async (id) => {
+  const { value: status } = await Swal.fire({
+    title: "Change Order Status",
+    text: "Select a new status for this order.",
+    input: "select",
+    inputOptions: {
+      Pending: "Pending",
+      Shipped: "Shipped",
+      Delivered: "Delivered",
+      Canceled: "Canceled"
+    },
+    inputPlaceholder: "Select status",
+    showCancelButton: true,
+    confirmButtonText: "Change Status",
+    cancelButtonText: "Cancel",
+    imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp", // Status change GIF
+    imageWidth: 300,
+    imageHeight: 350,
+    inputValidator: (value) => {
+      if (!value) {
+        return "Please select a status!";
+      }
+    },
+  });
+
+  if (status) {
+    // Confirmed status change
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to change the order status to "${status}"?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, change it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(`${API_BASE_URL}/orders/${id}/`, { status })
+          .then(() => {
+            setRefresh(!refresh); // Trigger re-fetching of orders
+            Swal.fire(
+              "Updated!",
+              `Order status has been changed to "${status}".`,
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire(
+              "Error!",
+              "There was an issue changing the order status.",
+              "error"
+            );
+          });
+      }
+    });
+  }
+};
+
+const handleCancelOrder = (id) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "Do you want to cancel this order?",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, cancel it!",
+    cancelButtonText: "No, keep it",
+    imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/cancel-order-illustration-download-in-svg-png-gif-file-formats--cancelled-refusal-rejected-online-shopping-pack-e-commerce-illustrations-6506585.png", // Cancel GIF
+    imageWidth: 400,
+    imageHeight: 300,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios
+        .patch(`${API_BASE_URL}/orders/${id}/`, { status: "Canceled" })
+        .then(() => {
+          setRefresh(!refresh); // Trigger re-fetching of orders
+          Swal.fire(
+            "Cancelled!",
+            "The order has been successfully cancelled.",
+            "success"
+          );
+        })
+        .catch(() => {
+          Swal.fire(
+            "Error!",
+            "There was an issue cancelling the order.",
+            "error"
+          );
+        });
+    }
+  });
+};
+
+
+
   return (
     <>
       <DashboardSideNav />
@@ -11,27 +163,33 @@ const OrderDetails = () => {
         <div className="content-inner mt-5 py-0">
           <div className="d-flex flex-wrap justify-content-between">
             <div className="d-flex align-items-center flex-wrap mb-4 mb-lg-0">
+             
+            <div className="d-flex align-items-end mx-5">
+                <Link to={'/orders'}>
+                  <span className="text-dark fw-bolder">Orders /</span>
+                </Link>
+                <span className="mb-0 fw-bolder">Orders Details</span>
+              </div>
               <button
                 type="button"
                 className="btn btn-outline-primary me-5 rounded-pill"
               >
-                #INV-0012456
+                #{id}
               </button>
-              <div className="d-flex align-items-end ms-5">
-                <span className="text-dark fw-bolder">Orders /</span>
-                <span className="mb-0 fw-bolder">Orders Details</span>
-              </div>
+              
             </div>
             <div className="d-flex flex-wrap">
               <button
                 type="button"
                 className="btn btn-outline-danger rounded-pill"
+                onClick={() => handleCancelOrder(id)}
               >
                 Cancel Order
               </button>
               <button
                 type="button"
                 className="btn text-white btn-success ms-3 rounded-pill"
+                onClick={() => handleStatusChange(id)}
               >
                 Delivered
               </button>
@@ -49,7 +207,7 @@ const OrderDetails = () => {
                         alt="profile-image"
                       />
                       <h6 className="mt-3 heading-title fw-bolder">
-                        Robert Fox
+                       {user.name}
                       </h6>
                       <button
                         type="button"
@@ -76,7 +234,7 @@ const OrderDetails = () => {
                         />
                       </svg>
                       <span className="mb-0 ms-3 fw-bolder text-primary">
-                        (480) 555-0103
+                        +91 {user.mobile_number}
                       </span>
                     </div>
                     <div className="d-flex mt-3 ">
@@ -100,17 +258,11 @@ const OrderDetails = () => {
                         />
                       </svg>
                       <span className="mb-0 ms-3 text-dark fw-bolder">
-                        6391 Elgin St. Celina, Delaware 10299
+                        {user.address}, {user.city}.
                       </span>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h6 className="heading-title fw-bolder">Note order</h6>
-                    <p className="mb-0 mt-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </p>
-                  </div>
+                  
                 </div>
               </div>
               <div className="card ">
@@ -118,7 +270,7 @@ const OrderDetails = () => {
                   <div className="text-center">
                     <h4 className="fw-bolder mb-2">Delivery Guy</h4>
                     <img
-                      src="/src/assets/dashboard//images/order-details/2.png"
+                      src="/src/assets/dashboard/images/order-details/2.png"
                       className="img-fluid avatar-rounded avatar-100 mt-5"
                       alt="profile-image"
                     />
@@ -174,43 +326,7 @@ const OrderDetails = () => {
                   </div>
                 </div>
               </div>
-              <div className="card">
-                <div className="card-header border-0">
-                  <h4 className="">Customer Favourite</h4>
-                </div>
-                <div className="card-body px-2">
-                  <div className="row">
-                    <div className="col-md-6  mb-4 mb-md-0">
-                      <div
-                        id="circle-progress-01"
-                        className="circle-progress-01 circle-progress circle-progress-primary text-center"
-                        data-min-value="0"
-                        data-max-value="100"
-                        data-value="66"
-                        data-type="percent"
-                      ></div>
-                      <div className="text-center mt-4">
-                        <h6 className="heading-title fw-bolder">Food</h6>
-                        <h6 className="heading-title fw-bolder">45 menus</h6>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div
-                        id="circle-progress-02"
-                        className="circle-progress-02 circle-progress circle-progress-success text-center"
-                        data-min-value="0"
-                        data-max-value="100"
-                        data-value="31"
-                        data-type="percent"
-                      ></div>
-                      <div className="text-center mt-4">
-                        <h6 className="heading-title fw-bolder">Drink</h6>
-                        <h6 className="heading-title fw-bolder">21 menus</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+           
             </div>
             <div className="col-md-12 col-lg-8 col-xl-9">
               <div className="card table-responsive">
@@ -240,298 +356,68 @@ const OrderDetails = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="cart_item border-bottom">
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <img
-                            src="/src/assets/dashboard//images/order-details/5.png"
-                            className="img-fluid avatar-rounded avatar-70"
-                            alt="profile-image"
-                          />
-                          <div className="d-flex ms-4">
-                            <div>
-                              <h6 className="heading-title text-primary">
-                                Main Course
-                              </h6>
-                              <p className="mb-0 fw-bolder">
-                                Panner curry special with
-                                <br />
-                                cucumber
-                              </p>
-                              <div className="d-flex mb-2 mt-3">
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 30 30"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 30 30"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <small className="ms-1 text-dark">
-                                  (400 reviews)
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">1x</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$4.12</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$4.12</span>
-                      </td>
-                    </tr>
-                    <tr className="cart_item border-bottom">
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <img
-                            src="/src/assets/dashboard//images/order-details/3.png"
-                            className="img-fluid avatar-rounded avatar-70"
-                            alt="profile-image"
-                          />
-                          <div className="d-flex ms-4">
-                            <div>
-                              <h6 className=" heading-title text-primary">
-                                Desert
-                              </h6>
-                              <p className="mb-0 fw-bolder">
-                                Watermelon juice with ice
-                              </p>
-                              <div className="d-flex mb-2 mt-3">
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 30 30"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 30 30"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <small className="ms-1 text-dark">
-                                  (381 reviews)
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">3x</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$14.19</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$44.97</span>
-                      </td>
-                    </tr>
-                    <tr className="cart_item">
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <img
-                            src="/src/assets/dashboard//images/order-details/4.png"
-                            className="img-fluid avatar-rounded avatar-70"
-                            alt="profile-image"
-                          />
-                          <div className="d-flex ms-4">
-                            <div>
-                              <h6 className=" heading-title text-primary">
-                                Main Course
-                              </h6>
-                              <p className="mb-0 fw-bolder">
-                                Italino pizza with garlic
-                              </p>
-                              <div className="d-flex mb-2 mt-3">
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <svg
-                                  width="18"
-                                  viewBox="0 0 30 30"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                    fill="#EA6A12"
-                                  />
-                                </svg>
-                                <small className="ms-1 text-dark">
-                                  (252 reviews)
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">1x</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$11.40</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="rowpad">$15.44</span>
-                      </td>
-                    </tr>
+                  {order.purchases.map((purchase, index) => (
+          <tr key={index} className="cart_item border-bottom">
+            {/* Item Details */}
+            <td>
+              <div className="d-flex align-items-center">
+                <img
+                  src={`${API_BASE_URL}/${purchase.dish_image}`}
+                  className="img-fluid avatar-rounded avatar-70"
+                  alt={purchase.dish_name}
+                />
+                <div className="d-flex ms-4">
+                  <div>
+                    <h6 className="heading-title text-primary">
+                      {purchase.dish_category}
+                    </h6>
+                    <p className="mb-0 fw-bolder">{purchase.dish_name}</p>
+                    <div className="d-flex mb-2 mt-3">
+                      {/* Render dish ratings */}
+                      {Array.from({ length: purchase.dish_ratings }).map(
+                        (_, i) => (
+                          <svg
+                            key={i}
+                            width="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M13.1043 4.17701L14.9317 7.82776C15.1108 8.18616 15.4565 8.43467 15.8573 8.49218L19.9453 9.08062C20.9554 9.22644 21.3573 10.4505 20.6263 11.1519L17.6702 13.9924C17.3797 14.2718 17.2474 14.6733 17.3162 15.0676L18.0138 19.0778C18.1856 20.0698 17.1298 20.8267 16.227 20.3574L12.5732 18.4627C12.215 18.2768 11.786 18.2768 11.4268 18.4627L7.773 20.3574C6.87023 20.8267 5.81439 20.0698 5.98724 19.0778L6.68385 15.0676C6.75257 14.6733 6.62033 14.2718 6.32982 13.9924L3.37368 11.1519C2.64272 10.4505 3.04464 9.22644 4.05466 9.08062L8.14265 8.49218C8.54354 8.43467 8.89028 8.18616 9.06937 7.82776L10.8957 4.17701C11.3477 3.27433 12.6523 3.27433 13.1043 4.17701Z"
+                              fill="#EA6A12"
+                            />
+                          </svg>
+                        )
+                      )}
+                      <small className="ms-1 text-dark">
+                        ({purchase.dish_ratings} reviews)
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            {/* Quantity */}
+            <td className="text-center">
+              <span className="rowpad">{purchase.quantity}x</span>
+            </td>
+
+            {/* Price */}
+            <td className="text-center">
+              <span className="rowpad">₹ {purchase.total_price}</span>
+            </td>
+
+            {/* Total Price */}
+            <td className="text-center">
+              <span className="rowpad">₹ {purchase.total_price}</span>
+            </td>
+          </tr>
+        ))}
+                    
                   </tbody>
                 </table>
               </div>

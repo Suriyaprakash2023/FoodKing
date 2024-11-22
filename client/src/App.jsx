@@ -35,7 +35,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute requiredRole="admin"><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard-header" element={<DashboardHeader />} />
             <Route path="/orders" element={<Orders />} />
-            <Route path="/order-details" element={<OrderDetails />} />
+            <Route path="/order-detail/:id/" element={<OrderDetails />} />
             <Route path="/dishes" element={<Dishes />} />
             <Route path="/dish-details/:id" element={<DishDetails />} />
             <Route path="/product-details/:id" element={<ProductDetails />} />
