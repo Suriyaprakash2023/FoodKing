@@ -52,6 +52,7 @@ class CustomUser(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100)
+    image = models.ImageField(blank=True, null=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -63,6 +64,7 @@ class CustomUser(AbstractUser):
 groups = [
     "admin",
     "user", # Default group for all users
+    "delivary_partner",
 
 ]
 
@@ -131,12 +133,15 @@ class CartItem(models.Model):
     
 
 
-
+from django.utils.timezone import now
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders',blank=True, null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+    order_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
     status = models.CharField(max_length=20, choices=[('Pending', 'Pending'),('Shipped', 'Shipped'), ('Delivered', 'Delivered'), ('Canceled', 'Canceled')], default='Pending',blank=True, null=True)
+    shipping_time = models.DateTimeField(blank=True, null=True, help_text="Time when the order was shipped.")
+    delivery_time = models.DateTimeField(blank=True, null=True, help_text="Time when the order was delivered.")
+
     unique_id = AlphaNumericFieldfive(unique=True, editable=False,null=True, blank=False)
     def update_total_price(self):
         # Calculate the total price based on associated ItemPurchase objects
@@ -149,6 +154,21 @@ class Order(models.Model):
             while Order.objects.filter(unique_id=self.unique_id).exists():
                 self.unique_id = AlphaNumericFieldfive.generate_alphanumeric()
         super(Order, self).save(*args, **kwargs)
+
+
+    def update_status(self, new_status):
+        """Update the status and corresponding timestamps."""
+        if new_status not in dict(self._meta.get_field('status').choices):
+            raise ValueError("Invalid status")
+
+        self.status = new_status
+
+        if new_status == 'Shipped' and not self.shipping_time:
+            self.shipping_time = now()
+        elif new_status == 'Delivered' and not self.delivery_time:
+            self.delivery_time = now()
+
+        self.save()
 
     def __str__(self):
         return str(self.unique_id)

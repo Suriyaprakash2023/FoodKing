@@ -7,15 +7,16 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const OrderDetails = () => {
-  const [order, setOrder] = useState(null); // Initialize state as `null`
-  const [user,setUser] = useState(null)
-  const [loading, setLoading] = useState(true); // Track loading state
-  const { id } = useParams(); // Extract `id` from the URL
-  const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(false); // State to trigger re-fetching
-    // Fetch the dish details
   
     // useEffect hook to call dishDetail on component mount or when id/token changes
+    const [order, setOrder] = useState(null);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(false); // To trigger re-fetch
+  
+    const { id } = useParams();
+  
+    // Fetch Order Details
     useEffect(() => {
       const orderDetail = async () => {
         try {
@@ -23,14 +24,9 @@ const OrderDetails = () => {
             console.error("No ID provided");
             return;
           }
-    
+  
           console.log(`Fetching order details for ID: ${id}`);
-          const response = await axios.post(
-            `${API_BASE_URL}/order-detail/${id}/`
-            // Uncomment and add headers if needed
-            // , { headers: { Authorization: `Bearer ${yourAuthToken}` } }
-          );
-    
+          const response = await axios.post(`${API_BASE_URL}/order-detail/${id}/`);
           if (response.status === 200) {
             console.log(response.data, "response.data");
             setOrder(response.data);
@@ -40,119 +36,128 @@ const OrderDetails = () => {
           }
         } catch (error) {
           console.error("Error fetching order details:", error.response || error);
-        }finally {
-          setLoading(false); // Stop loading
+        } finally {
+          setLoading(false);
         }
       };
-    
+  
       orderDetail();
-    }, [id]);
-    
-// Render loading state or error placeholder
-if (loading) {
-  return <p>Loading order details...</p>;
-}
-
-if (!order || !user) {
-  return <p>Error: Unable to fetch order details.</p>;
-}
-
-
-
-const handleStatusChange = async (id) => {
-  const { value: status } = await Swal.fire({
-    title: "Change Order Status",
-    text: "Select a new status for this order.",
-    input: "select",
-    inputOptions: {
-      Pending: "Pending",
-      Shipped: "Shipped",
-      Delivered: "Delivered",
-      Canceled: "Canceled"
-    },
-    inputPlaceholder: "Select status",
-    showCancelButton: true,
-    confirmButtonText: "Change Status",
-    cancelButtonText: "Cancel",
-    imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp", // Status change GIF
-    imageWidth: 300,
-    imageHeight: 350,
-    inputValidator: (value) => {
-      if (!value) {
-        return "Please select a status!";
-      }
-    },
-  });
-
-  if (status) {
-    // Confirmed status change
-    Swal.fire({
-      title: "Are you sure?",
-      text: `Do you want to change the order status to "${status}"?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, change it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .patch(`${API_BASE_URL}/orders/${id}/`, { status })
-          .then(() => {
-            setRefresh(!refresh); // Trigger re-fetching of orders
-            Swal.fire(
-              "Updated!",
-              `Order status has been changed to "${status}".`,
-              "success"
-            );
-          })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              "There was an issue changing the order status.",
-              "error"
-            );
-          });
-      }
-    });
-  }
-};
-
-const handleCancelOrder = (id) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "Do you want to cancel this order?",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, cancel it!",
-    cancelButtonText: "No, keep it",
-    imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/cancel-order-illustration-download-in-svg-png-gif-file-formats--cancelled-refusal-rejected-online-shopping-pack-e-commerce-illustrations-6506585.png", // Cancel GIF
-    imageWidth: 400,
-    imageHeight: 300,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios
-        .patch(`${API_BASE_URL}/orders/${id}/`, { status: "Canceled" })
-        .then(() => {
-          setRefresh(!refresh); // Trigger re-fetching of orders
-          Swal.fire(
-            "Cancelled!",
-            "The order has been successfully cancelled.",
-            "success"
-          );
-        })
-        .catch(() => {
-          Swal.fire(
-            "Error!",
-            "There was an issue cancelling the order.",
-            "error"
-          );
-        });
+    }, [id, refresh]); // Re-fetch when `id` or `refresh` changes
+  
+    if (loading) {
+      return <p>Loading order details...</p>;
     }
-  });
-};
+  
+    if (!order || !user) {
+      return <p>Error: Unable to fetch order details.</p>;
+    }
+  
+    const handleStatusChange = async (id) => {
+      const { value: status } = await Swal.fire({
+        title: "Change Order Status",
+        text: "Select a new status for this order.",
+        input: "select",
+        inputOptions: {
+          Pending: "Pending",
+          Shipped: "Shipped",
+          Delivered: "Delivered",
+          Canceled: "Canceled",
+        },
+        inputPlaceholder: "Select status",
+        showCancelButton: true,
+        confirmButtonText: "Change Status",
+        cancelButtonText: "Cancel",
+        imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp",
+        imageWidth: 400,
+        imageHeight: 350,
+        inputValidator: (value) => {
+          if (!value) {
+            return "Please select a status!";
+          }
+        },
+      });
+  
+      if (status) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: `Do you want to change the order status to "${status}"?`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Yes, change it!",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios
+              .patch(`${API_BASE_URL}/orders/${id}/`, { status })
+              .then(() => {
+                setRefresh(!refresh); // Trigger re-fetching of order details
+                Swal.fire(
+                  "Updated!",
+                  `Order status has been changed to "${status}".`,
+                  "success"
+                );
+              })
+              .catch(() => {
+                Swal.fire(
+                  "Error!",
+                  "There was an issue changing the order status.",
+                  "error"
+                );
+              });
+          }
+        });
+      }
+    };
+  
+    const handleCancelOrder = (id) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to cancel this order?",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, cancel it!",
+        cancelButtonText: "No, keep it",
+        imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/cancel-order-illustration-download-in-svg-png-gif-file-formats--cancelled-refusal-rejected-online-shopping-pack-e-commerce-illustrations-6506585.png",
+        imageWidth: 400,
+        imageHeight: 300,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .patch(`${API_BASE_URL}/orders/${id}/`, { status: "Canceled" })
+            .then(() => {
+              setRefresh(!refresh); // Trigger re-fetching of order details
+              Swal.fire(
+                "Cancelled!",
+                "The order has been successfully cancelled.",
+                "success"
+              );
+            })
+            .catch(() => {
+              Swal.fire(
+                "Error!",
+                "There was an issue cancelling the order.",
+                "error"
+              );
+            });
+        }
+      });
+    };
+  
 
-
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleString("en-US", {
+        weekday: "short",   // Fri
+        day: "2-digit",     // 22
+        month: "short",     // Nov
+        year: "numeric",    // 2024
+        hour: "2-digit",    // 01
+        minute: "2-digit",  // 20
+        hour12: true,       // AM/PM
+      });
+    };
+    
 
   return (
     <>
@@ -617,29 +622,28 @@ const handleCancelOrder = (id) => {
                           <h6 className="heading-title fw-bolder mb-2">
                             Order Created
                           </h6>
-                          <p className="mb-0">Thu 21 Jul 2020,</p>
-                          <p className="mb-0">10:44 AM</p>
+                          <p className="mb-0">{formatDate(order.order_at)}</p>
+                          
                         </div>
                         <div className="div  mb-3 mb-md-0">
                           <h6 className="heading-title fw-bolder mb-2">
-                            Payment Success
+                            Shipped
                           </h6>
-                          <p className="mb-0">Fri 22 Jul 2020,</p>
-                          <p className="mb-0">10:44 AM</p>
+                          <p className="mb-0">{formatDate(order.shipping_time)}</p>
+                          
                         </div>
                         <div className="div">
                           <h6 className="heading-title fw-bolder mb-2">
                             On Delivery
                           </h6>
-                          <p className="mb-0">Sat 23 Jul 2020,</p>
-                          <p className="mb-0">1:24 PM</p>
+                          <p className="mb-0">{formatDate(order.delivery_time)}</p>
+                        
                         </div>
                         <div className="div">
                           <h6 className="heading-title fw-bolder mb-2">
                             Order Delivered
                           </h6>
-                          <p className="mb-0">Sat 23 Jul 2020,</p>
-                          <p className="mb-0">1:24 PM</p>
+                          <p className="mb-0">{formatDate(order.delivery_time)}</p>
                         </div>
                       </div>
                     </div>

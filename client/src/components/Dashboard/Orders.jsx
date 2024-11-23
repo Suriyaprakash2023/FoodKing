@@ -17,10 +17,11 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [orderCategory, setOrderCategory] = useState([]);
   const [newOrders, setNewOrders] = useState([]);
+  const [delivaryPartner, setDelivaryPartner] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(false); // State to trigger re-fetching
-  console.log(orders, "response.orders");
+  console.log(delivaryPartner, "response.delivaryPartner");
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -30,6 +31,7 @@ const Orders = () => {
 
         setOrders(response.data.last_8_orders);
         setOrderCategory(response.data.status_counts);
+        setDelivaryPartner(response.data.delivary_user)
         setLoading(false);
       } catch (error) {
         console.error("Error fetching dishes:", error);
@@ -64,6 +66,7 @@ const Orders = () => {
 
 
   const handleStatusChange = async (unique_id) => {
+    // Determine if status is being set to "Shipped"
     const { value: status } = await Swal.fire({
       title: "Change Order Status",
       text: "Select a new status for this order.",
@@ -72,13 +75,14 @@ const Orders = () => {
         Pending: "Pending",
         Shipped: "Shipped",
         Delivered: "Delivered",
-        Canceled: "Canceled"
+        Canceled: "Canceled",
       },
       inputPlaceholder: "Select status",
       showCancelButton: true,
       confirmButtonText: "Change Status",
       cancelButtonText: "Cancel",
-      imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp", // Status change GIF
+      imageUrl:
+        "https://cdni.iconscout.com/illustration/premium/thumb/businessman-having-doubt-illustration-download-in-svg-png-gif-file-formats--confusing-confusion-confused-question-business-activity-pack-professionals-illustrations-4185610.png?f=webp",
       imageWidth: 300,
       imageHeight: 350,
       inputValidator: (value) => {
@@ -87,9 +91,66 @@ const Orders = () => {
         }
       },
     });
-
-    if (status) {
-      // Confirmed status change
+  
+    if (status === "Shipped") {
+      // Select delivery partner when status is set to Shipped
+      const deliveryOptions = delivaryPartner.reduce((acc, partner) => {
+        acc[partner.id] = partner.name;
+        return acc;
+      }, {});
+  
+      const { value: deliveryPartnerId } = await Swal.fire({
+        title: "Assign Delivery Partner",
+        text: "Select a delivery partner for this order.",
+        input: "select",
+        inputOptions: deliveryOptions,
+        inputPlaceholder: "Select delivery partner",
+        showCancelButton: true,
+        confirmButtonText: "Assign",
+        cancelButtonText: "Cancel",
+        inputValidator: (value) => {
+          if (!value) {
+            return "Please select a delivery partner!";
+          }
+        },
+      });
+  
+      if (deliveryPartnerId) {
+        // Confirm assignment
+        Swal.fire({
+          title: "Are you sure?",
+          text: `Assign delivery partner "${deliveryOptions[deliveryPartnerId]}" and change status to "Shipped"?`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Yes, assign and change!",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios
+              .patch(`${API_BASE_URL}/orders/${unique_id}/`, {
+                status,
+                delivery_partner_id: deliveryPartnerId,
+              })
+              .then(() => {
+                setRefresh(!refresh); // Trigger re-fetching of orders
+                Swal.fire(
+                  "Updated!",
+                  `Order status changed to "Shipped" and delivery partner assigned.`,
+                  "success"
+                );
+              })
+              .catch(() => {
+                Swal.fire(
+                  "Error!",
+                  "There was an issue assigning the delivery partner or changing the status.",
+                  "error"
+                );
+              });
+          }
+        });
+      }
+    } else if (status) {
+      // For other statuses
       Swal.fire({
         title: "Are you sure?",
         text: `Do you want to change the order status to "${status}"?`,
@@ -120,6 +181,7 @@ const Orders = () => {
       });
     }
   };
+  
 
   const handleCancelOrder = (unique_id) => {
     Swal.fire({
@@ -168,31 +230,23 @@ const Orders = () => {
       setLoading(false);
     }
   };
+
+
   
-  // useEffect(() => {
-  //   const fetchNewOrders = async () => {
-  //     if (!orderCategory) return; // Do nothing if no category is selected
-
-  //     try {
-  //       setLoading(true);
-  //       const response = await axios.get(
-  //         `${API_BASE_URL}/orders/${orderCategory}/`
-  //       );
-  //       if (response.status === 200) {
-  //         setNewOrders(response.data);
-  //         setOrderCategory(`${orderCategory} Orders`);
-  //       } else {
-  //         console.log("Failed to fetch new Orders.");
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching category Orders:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchNewOrders();
-  // }, [orderCategory]);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      weekday: "short",   // Fri
+      day: "2-digit",     // 22
+      month: "short",     // Nov
+      year: "numeric",    // 2024
+      hour: "2-digit",    // 01
+      minute: "2-digit",  // 20
+      hour12: true,       // AM/PM
+    });
+  };
+  
+  
 
   return (
     <>
@@ -276,7 +330,7 @@ const Orders = () => {
                           </h6>
                           </Link>
                           <p className="mb-0">
-                            {new Date(order.created_at).toLocaleString()}
+                            {formatDate(order.order_at)}
                           </p>
                         </div>
                         <img

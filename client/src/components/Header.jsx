@@ -226,7 +226,7 @@ const Header = () => {
                                            
                                         </div>
                                     </div>
-                                    <a  className="cart-icon">
+                                    <a  className="cart-icon d-none">
                                     
                                     </a>
 

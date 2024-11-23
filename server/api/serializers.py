@@ -167,7 +167,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['unique_id', 'total_price', 'status', 'created_at', 'purchases']
+        fields = ['unique_id', 'total_price', 'status',  'order_at',"shipping_time","delivery_time", 'purchases']
 
 
 class AdminOrderSerializer(serializers.ModelSerializer):
@@ -175,4 +175,4 @@ class AdminOrderSerializer(serializers.ModelSerializer):
     user =UserSerializer(read_only=True)
     class Meta:
         model = Order
-        fields = ['unique_id', 'total_price','user', 'status', 'created_at', 'purchases']
+        fields = ['unique_id', 'total_price','user', 'status', 'order_at',"shipping_time","delivery_time", 'purchases']

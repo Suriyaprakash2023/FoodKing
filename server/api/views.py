@@ -322,7 +322,7 @@ class UserOrdersView(APIView):
             orders.status = 'Canceled'
             orders.save()
             return Response(
-                {"message": "Order item deleted successfully."},
+                {"message": "Order item Canceled successfully."},
                 status=status.HTTP_204_NO_CONTENT,
             )
         except CartItem.DoesNotExist:
@@ -332,6 +332,7 @@ class UserOrdersView(APIView):
             )
         
 from django.db.models import Count
+from django.utils.timezone import now
 class OrdersView(APIView):
     def get(self, request):
         # Count orders by status
@@ -343,13 +344,20 @@ class OrdersView(APIView):
         status_counts_dict = {item['status']: item['count'] for item in status_counts}
 
         # Get the last 8 orders
-        last_8_orders = Order.objects.all().order_by('-created_at')[:8]
+        last_8_orders = Order.objects.all().order_by('-order_at')[:8]
         last_8_orders_data = OrderSerializer(last_8_orders, many=True).data
+        # delivery_partner_group = Group.objects.get(name="delivery_partner")
 
+        # Get all users who belong to the 'delivery_partner' group
+        delivery_partners = CustomUser.objects.filter(groups=3)  # 3 is  delivery_partner group
+        delivary_user = UserSerializer(delivery_partners,many=True)
+  
+        
         # Combine the response
         response_data = {
             "status_counts": status_counts_dict,
             "last_8_orders": last_8_orders_data,
+            "delivary_user": delivary_user.data,
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
@@ -360,10 +368,21 @@ class OrdersView(APIView):
         return Response(serializers.data, status=status.HTTP_200_OK)
 
     def patch(self,request,unique_id):
-        print(request.data['status'],unique_id,"data")
         order = Order.objects.get(unique_id=unique_id)
-        order.status = request.data['status']
-        order.save()
+        if request.data['status'] == "Shipped":
+            order.status = request.data['status']
+            order.update_status('Shipped')
+            order.save()
+
+        elif request.data['status'] == "Delivered":
+            order.status = request.data['status']
+            order.update_status('Delivered')
+            order.save()
+        else:
+            print(request.data['status'],unique_id,"data")
+            
+            order.status = request.data['status']
+            order.save()
         return Response( status=status.HTTP_200_OK)
     
 class OrderStatusView(APIView):
