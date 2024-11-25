@@ -11,6 +11,7 @@ const OrderDetails = () => {
     // useEffect hook to call dishDetail on component mount or when id/token changes
     const [order, setOrder] = useState(null);
     const [user, setUser] = useState(null);
+    const [delivaryPerson, setDelivaryPerson] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false); // To trigger re-fetch
   
@@ -31,6 +32,7 @@ const OrderDetails = () => {
             console.log(response.data, "response.data");
             setOrder(response.data);
             setUser(response.data.user);
+            setDelivaryPerson(response.data.delivery_person);
           } else {
             console.warn("Failed to fetch order details:", response.status);
           }
@@ -273,7 +275,7 @@ const OrderDetails = () => {
               <div className="card ">
                 <div className="card-body">
                   <div className="text-center">
-                    <h4 className="fw-bolder mb-2">Delivery Guy</h4>
+                    <h4 className="fw-bolder mb-2">Delivery Person</h4>
                     <img
                       src="/src/assets/dashboard/images/order-details/2.png"
                       className="img-fluid avatar-rounded avatar-100 mt-5"
@@ -281,7 +283,7 @@ const OrderDetails = () => {
                     />
                     <h6 className="mt-3 heading-title fw-bolder">
                       {" "}
-                      Robert Fox
+                      {delivaryPerson.name}
                     </h6>
                   </div>
                   <div className="d-flex mt-4">
@@ -302,7 +304,7 @@ const OrderDetails = () => {
                       />
                     </svg>
                     <span className="mb-0 ms-3 fw-bolder text-primary">
-                      (480) 555-0103
+                      +91 {delivaryPerson.mobile_number}
                     </span>
                   </div>
                   <div className="d-flex mt-3 ">
@@ -326,7 +328,7 @@ const OrderDetails = () => {
                       />
                     </svg>
                     <span className="mb-0 ms-3 text-dark fw-bolder">
-                      6391 Elgin St. Celina, Delaware 10299
+                      {delivaryPerson.address}, {delivaryPerson.city}.
                     </span>
                   </div>
                 </div>

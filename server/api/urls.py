@@ -25,4 +25,6 @@ urlpatterns = [
     path('purchase-cart-items/', BulkPurchaseView.as_view(), name='purchase-cart-items'),
     path('user-orders/', UserOrdersView.as_view(), name='user-orders'),
     path('user-orders/<int:oredr_id>/', UserOrdersView.as_view(), name='user-orders-update'),
+    path('payments/', PaymentView.as_view(), name='payments'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

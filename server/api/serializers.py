@@ -173,6 +173,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class AdminOrderSerializer(serializers.ModelSerializer):
     purchases = ItemPurchaseSerializer(many=True, read_only=True)  # Include related ItemPurchase objects
     user =UserSerializer(read_only=True)
+    delivery_person = UserSerializer(read_only=True)
     class Meta:
         model = Order
-        fields = ['unique_id', 'total_price','user', 'status', 'order_at',"shipping_time","delivery_time", 'purchases']
+        fields = ['unique_id', 'delivery_person','total_price','user', 'status', 'order_at',"shipping_time","delivery_time", 'purchases']

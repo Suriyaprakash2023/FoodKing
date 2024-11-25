@@ -1,15 +1,40 @@
-import { useEffect,useContext } from "react";
-
-
-
+import {useState, useEffect,useContext } from "react";
 
 import DashboardHeader from "../Dashboard/DashboardHeader.jsx";
 import DashboardFooter from "../Dashboard/DashboardFooter.jsx";
 import DashboardSideNav from "./DashboardSideNav.jsx";
 import AuthContext from '../context/AuthContext.jsx';
-// import bg from "/src/assets/dashboard/images/dashboard.png";
-import bg from "../../assets/dashboard/images/dashboard.png";
+import {Link} from 'react-router-dom';
+import TickPlacementBars from './TickPlacementBars.jsx';
+import {API_BASE_URL} from '../context/data.js' ;
+import axios from 'axios'
+
 const Dashboard = () => {
+
+  const [orders, setOrders] = useState([]);
+  const [totalPrice, setTotalPrice] = useState([]);
+  const [orderCategory, setOrderCategory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_BASE_URL}/dashboard/`);
+
+        setOrders(response.data.last_6_orders_data);
+        setTotalPrice(response.data.total_amount);
+        setLoading(false);
+        console.log(response.data.last_6_orders_data,'gagg')
+      } catch (error) {
+        console.error("Error fetching dishes:", error);
+        setError(true);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   useEffect(() => {
 
     // Load main site CSS
@@ -21,20 +46,22 @@ const Dashboard = () => {
 
     
     // Load main site JS
-    import("/src/assets/dashboard/js/core/libs.min.js");
-    import("/src/assets/dashboard/js/core/external.min.js");
+    import("https://cdn.jsdelivr.net/npm/circle-progress@1.2.2/dist/circle-progress.min.js");
+    import("https://cdn.jsdelivr.net/npm/apexcharts");
+    // import("/src/assets/dashboard/js/core/libs.min.js");
+    // import("/src/assets/dashboard/js/core/external.min.js");
     import("/src/assets/dashboard/js/charts/widgetcharts.js");
     import("/src/assets/dashboard/js/charts/vectore-chart.js");
     import("/src/assets/dashboard/js/charts/dashboard.js");
     import("/src/assets/dashboard/js/charts/admin.js");
     import("/src/assets/dashboard/js/fslightbox.js");
-    import("/src/assets/dashboard/vendor/gsap/gsap.min.js");
-    import("/src/assets/dashboard/vendor/gsap/ScrollTrigger.min.js");
-    import("/src/assets/dashboard/vendor/moment.min.js");
-    import("/src/assets/dashboard/js/animation/gsap-init.js");
+    // import("/src/assets/dashboard/vendor/gsap/gsap.min.js");
+    // import("/src/assets/dashboard/vendor/gsap/ScrollTrigger.min.js");
+    // import("/src/assets/dashboard/vendor/moment.min.js");
+    // import("/src/assets/dashboard/js/animation/gsap-init.js");
     import("/src/assets/dashboard/js/stepper.js");
     import("/src/assets/dashboard/js/form-wizard.js");
-    import("/src/assets/dashboard/js/app.js");
+    // import("/src/assets/dashboard/js/app.js");
     
 
   }, []);
@@ -74,7 +101,7 @@ const Dashboard = () => {
             >
               <div className="card-header">
                 <h4 className="card-title">Sales Figures</h4>
-                <small>2017-2018</small>
+                <small>2024</small>
               </div>
               <div
                 className="card-body"
@@ -86,7 +113,7 @@ const Dashboard = () => {
                 data-iq-trigger="scroll"
                 data-iq-ease="none"
               >
-                <div id="admin-chart-1" className="admin-chart-1"></div>
+                <TickPlacementBars/>
               </div>
             </div>
             <div className="row">
@@ -122,36 +149,8 @@ const Dashboard = () => {
                           Products
                         </button>
                       </li>
-                      <li className="nav-item" role="presentation">
-                        <button
-                          className="nav-link"
-                          id="customer-tab"
-                          data-bs-toggle="tab"
-                          data-chart="update"
-                          data-type="customer"
-                          data-bs-target="#customer"
-                          type="button"
-                          role="tab"
-                          aria-selected="false"
-                        >
-                          Customer
-                        </button>
-                      </li>
-                      <li className="nav-item" role="presentation">
-                        <button
-                          className="nav-link text-end"
-                          id="members-tab"
-                          data-bs-toggle="tab"
-                          data-chart="update"
-                          data-type="member"
-                          data-bs-target="#members"
-                          type="button"
-                          role="tab"
-                          aria-selected="false"
-                        >
-                          Members
-                        </button>
-                      </li>
+                      
+                      
                     </ul>
 
                     <div className="tab-content" id="myTabContent">
@@ -238,7 +237,7 @@ const Dashboard = () => {
                           />
                         </svg>
                       </div>
-                      <h6 className="heading-title text-center">$18 378</h6>
+                      <h6 className="heading-title text-center">₹ 18 378</h6>
                     </div>
                     <div className="text-end">
                       <div>
@@ -318,7 +317,7 @@ const Dashboard = () => {
                           />
                         </svg>
                       </div>
-                      <h6 className="heading-title text-center">$18 378</h6>
+                      <h6 className="heading-title text-center">₹ 18 378</h6>
                     </div>
                     <div className="text-end">
                       <div>
@@ -344,7 +343,7 @@ const Dashboard = () => {
                             />
                             <path
                               d="M4.75213 8.58301L9.77213 3.54134L14.793 8.58301"
-                              stroke="#EA6A12"
+                              stroke="#ea6a12"
                               strokeWidth="1.5"
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -704,8 +703,8 @@ const Dashboard = () => {
               >
                 <div className="col">
                   <p className="text-white mt-3 mb-4">Total earning</p>
-                  <h2 className="text-white mb-4">$ 4,585,963</h2>
-                  <a href="#" className="btn bg-white rounded-pill">View More</a>
+                  <h2 className="text-white mb-4">₹ {totalPrice ? (totalPrice):(0) }.00</h2>
+                  <Link to='/payments' className="btn bg-white rounded-pill">View More</Link>
                 </div>
                 <div className="col-2 card mb-0 bg-white card-body">
                   <div>
@@ -725,7 +724,7 @@ const Dashboard = () => {
                     >
                       <path
                         d="M9.77083 3.54199L9.77083 16.042"
-                        stroke="#EA6A12"
+                        stroke="#ea6a12"
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -753,108 +752,30 @@ const Dashboard = () => {
               data-iq-ease="none"
             >
               <div className="card-header">
-                <h4 className="card-title">Last Transaction</h4>
+                <h4 className="card-title">Reacent Orders</h4>
               </div>
-              <div className="card-body">
-                <div
-                  className="d-flex justify-content-between align-items-center mb-5"
-                >
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/01.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="1"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">
-                        Sausage Pizza
-                      </h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
-                </div>
-                <div
-                  className="d-flex justify-content-between align-items-center mb-5"
-                >
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/02.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="2"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">Noodles</h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
-                </div>
-                <div
-                  className="d-flex justify-content-between align-items-center mb-5"
-                >
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/03.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="3"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">Pasta</h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
-                </div>
-                <div
-                  className="d-flex justify-content-between align-items-center mb-5"
-                >
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/04.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="4"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">Burger</h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
-                </div>
-                <div
-                  className="d-flex justify-content-between align-items-center mb-5"
-                >
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/05.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="5"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">
-                        Sausage Pizza
-                      </h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
-                </div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <img
-                      src="/src/assets/dashboard/images/admin/06.png"
-                      className="img-fluid rounded-pill avatar-50"
-                      alt="6"
-                    />
-                    <div className="ms-3">
-                      <h6 className="heading-title fw-bolder mb-2">Cheese Pizza</h6>
-                      <p className="mb-0">20.01.2021</p>
-                    </div>
-                  </div>
-                  <h6 className="heading-title">-$115,00</h6>
+              {orders.map((order) =>
+        order.purchases.map((purchase, index) => (
+          <div className="card-body" key={`${order.unique_id}-${index}`}>
+            <div className="d-flex justify-content-between align-items-center mb-5">
+              <div className="d-flex align-items-center">
+                <img
+                  src={`${API_BASE_URL}/${purchase.dish_image}`}
+                  className="img-fluid rounded-pill avatar-50"
+                  alt={purchase.dish_name}
+                />
+                <div className="ms-3">
+                  <h6 className="heading-title fw-bolder mb-2">
+                    {purchase.dish_name}
+                  </h6>
+                  <p className="mb-0">{new Date(order.order_at).toLocaleDateString()}</p>
                 </div>
               </div>
+              <h6 className="heading-title">₹ {purchase.total_price}</h6>
+            </div>
+          </div>
+        ))
+      )}
             </div>
             <div
               className="card"

@@ -93,15 +93,29 @@ const Orders = () => {
     });
   
     if (status === "Shipped") {
-      // Select delivery partner when status is set to Shipped
-      const deliveryOptions = delivaryPartner.reduce((acc, partner) => {
-        acc[partner.id] = partner.name;
+      const deliveryOptions = delivaryPartner.reduce((acc, partner, index) => {
+        // Ensure the partner has a valid name, and use index as fallback for id
+        const partnerName = partner.name || `Unknown Partner (${index + 1})`;
+        acc[partner.email] = partnerName; // Use email as the key instead of id
         return acc;
       }, {});
   
-      const { value: deliveryPartnerId } = await Swal.fire({
+      // Check if deliveryOptions is empty
+      if (Object.keys(deliveryOptions).length === 0) {
+        Swal.fire({
+          title: "No Delivery Partners Available",
+          text: "Please add delivery partners before assigning an order.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        return; // Exit function early
+      }
+  
+      const { value: deliveryPartnerEmail } = await Swal.fire({
         title: "Assign Delivery Partner",
         text: "Select a delivery partner for this order.",
+        imageUrl:
+          "https://media1.tenor.com/m/RhkEyx5u5lcAAAAC/food-easyeats-app.gif",
         input: "select",
         inputOptions: deliveryOptions,
         inputPlaceholder: "Select delivery partner",
@@ -115,11 +129,12 @@ const Orders = () => {
         },
       });
   
-      if (deliveryPartnerId) {
-        // Confirm assignment
+      if (deliveryPartnerEmail) {
+        // Proceed with assigning the delivery partner
+        const partnerName = deliveryOptions[deliveryPartnerEmail];
         Swal.fire({
           title: "Are you sure?",
-          text: `Assign delivery partner "${deliveryOptions[deliveryPartnerId]}" and change status to "Shipped"?`,
+          text: `Assign delivery partner "${partnerName}" (${deliveryPartnerEmail}) and change status to "Shipped"?`,
           icon: "question",
           showCancelButton: true,
           confirmButtonText: "Yes, assign and change!",
@@ -128,14 +143,17 @@ const Orders = () => {
           if (result.isConfirmed) {
             axios
               .patch(`${API_BASE_URL}/orders/${unique_id}/`, {
-                status,
-                delivery_partner_id: deliveryPartnerId,
+                status: "Shipped",
+                delivery_partner_email: deliveryPartnerEmail, // Send the email
               })
-              .then(() => {
-                setRefresh(!refresh); // Trigger re-fetching of orders
+              .then((response) => {
+                console.log(response,"changeres")
+                setOrders(response.data.last_8_orders);
+                setOrderCategory(response.data.status_counts);
+                setDelivaryPartner(response.data.delivary_user)
                 Swal.fire(
                   "Updated!",
-                  `Order status changed to "Shipped" and delivery partner assigned.`,
+                  `Order status changed to "Shipped" and delivery partner "${partnerName}" assigned.`,
                   "success"
                 );
               })
@@ -162,8 +180,10 @@ const Orders = () => {
         if (result.isConfirmed) {
           axios
             .patch(`${API_BASE_URL}/orders/${unique_id}/`, { status })
-            .then(() => {
-              setRefresh(!refresh); // Trigger re-fetching of orders
+            .then((response) => {
+              setOrders(response.data.last_8_orders);
+              setOrderCategory(response.data.status_counts);
+              setDelivaryPartner(response.data.delivary_user)
               Swal.fire(
                 "Updated!",
                 `Order status has been changed to "${status}".`,
@@ -182,7 +202,6 @@ const Orders = () => {
     }
   };
   
-
   const handleCancelOrder = (unique_id) => {
     Swal.fire({
       title: "Are you sure?",

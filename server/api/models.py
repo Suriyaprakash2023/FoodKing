@@ -141,7 +141,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=[('Pending', 'Pending'),('Shipped', 'Shipped'), ('Delivered', 'Delivered'), ('Canceled', 'Canceled')], default='Pending',blank=True, null=True)
     shipping_time = models.DateTimeField(blank=True, null=True, help_text="Time when the order was shipped.")
     delivery_time = models.DateTimeField(blank=True, null=True, help_text="Time when the order was delivered.")
-
+    delivery_person =models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='delivery_person',blank=True, null=True)
     unique_id = AlphaNumericFieldfive(unique=True, editable=False,null=True, blank=False)
     def update_total_price(self):
         # Calculate the total price based on associated ItemPurchase objects

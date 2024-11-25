@@ -352,7 +352,7 @@ class OrdersView(APIView):
         delivery_partners = CustomUser.objects.filter(groups=3)  # 3 is  delivery_partner group
         delivary_user = UserSerializer(delivery_partners,many=True)
   
-        
+ 
         # Combine the response
         response_data = {
             "status_counts": status_counts_dict,
@@ -369,8 +369,14 @@ class OrdersView(APIView):
 
     def patch(self,request,unique_id):
         order = Order.objects.get(unique_id=unique_id)
+       
         if request.data['status'] == "Shipped":
+            delivery_person = CustomUser.objects.get(email = request.data['delivery_partner_email'])
+            print(request.data['delivery_partner_email'],"request.data['delivery_partner_id']")
+            print(delivery_person)
+            order.delivery_person = delivery_person
             order.status = request.data['status']
+            
             order.update_status('Shipped')
             order.save()
 
@@ -383,7 +389,33 @@ class OrdersView(APIView):
             
             order.status = request.data['status']
             order.save()
-        return Response( status=status.HTTP_200_OK)
+
+
+         # Count orders by status
+        status_counts = (
+            Order.objects.values('status')
+            .annotate(count=Count('status'))
+            .order_by('status')
+        )
+        status_counts_dict = {item['status']: item['count'] for item in status_counts}
+
+        # Get the last 8 orders
+        last_8_orders = Order.objects.all().order_by('-order_at')[:8]
+        last_8_orders_data = OrderSerializer(last_8_orders, many=True).data
+        # delivery_partner_group = Group.objects.get(name="delivery_partner")
+
+        # Get all users who belong to the 'delivery_partner' group
+        delivery_partners = CustomUser.objects.filter(groups=3)  # 3 is  delivery_partner group
+        delivary_user = UserSerializer(delivery_partners,many=True)
+  
+ 
+        # Combine the response
+        response_data = {
+            "status_counts": status_counts_dict,
+            "last_8_orders": last_8_orders_data,
+            "delivary_user": delivary_user.data,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
     
 class OrderStatusView(APIView):
     def post(self,request,category):
@@ -393,3 +425,25 @@ class OrderStatusView(APIView):
         order = Order.objects.filter(status=category)
         serializers = OrderSerializer(order,many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class PaymentView(APIView):
+    def get(self,request):
+        order = Order.objects.all()
+        serializers = AdminOrderSerializer(order,many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+from django.db.models import Sum
+class DashboardView(APIView):
+    def get(self,request):
+        total_amount = Order.objects.aggregate(total=Sum('total_price'))['total'] or 0
+        last_6_orders = Order.objects.all().order_by('-order_at')[:6]
+        last_6_orders_data = OrderSerializer(last_6_orders, many=True).data
+        
+        response_data = {
+            "total_amount": total_amount,
+            "last_6_orders_data":last_6_orders_data
+            
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
