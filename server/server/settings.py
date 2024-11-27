@@ -26,8 +26,9 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '*',
   '.vercel.app',
-  
+
 ]
 
 
@@ -85,6 +86,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',  # Using SQLite as the default engine
@@ -92,7 +94,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 #     }
 # }
 
-#on Server
+#On Server
 
 DATABASES = {
     'default': {
