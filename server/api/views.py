@@ -4,13 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 import json
-
+from django.http import HttpResponse
 from .serializers import *
 
 
 # Create your views here.
 def index(request):
-    return Response("Hello World")
+    return HttpResponse ("Hello World")
 
 
 
