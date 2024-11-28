@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 #On Server
-ALLOWED_HOSTS = [ '.vercel.app',]
+ALLOWED_HOSTS = [ '*',]
 
 
 # ALLOWED_HOSTS = [
